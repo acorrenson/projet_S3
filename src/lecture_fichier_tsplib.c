@@ -1,5 +1,5 @@
-#include "pretty.h"
-#include "tspstat.h"
+#include <pretty.h>
+#include <tspstat.h>
 
 /**
  * @brief Exit program due to TSP file format read
@@ -122,8 +122,8 @@ int lecture_fichier(const char *filename, instance_t *instance) {
 
   strcpy(instance->name, name);
   strcpy(instance->type, "TSP");
-  instance->dimension = dim;
   strcpy(instance->EDGE_TYPE, "EUC_2D");
+  instance->dimension = dim;
 
   fclose(f);
 
