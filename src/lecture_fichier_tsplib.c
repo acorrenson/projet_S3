@@ -38,7 +38,7 @@ bool prefixe(char *motif, char buff[MAXBUF]) {
  * @param instante  Pointeur sur l'instance à initialiser
  * @return int      1 en cas d'erreur(s), 0 sinon.
  */
-int lecture_fichier(char *filename, instance_t *instance) {
+int lecture_fichier(const char *filename, instance_t *instance) {
 
   FILE *f = fopen(filename, "r");
 
@@ -120,9 +120,6 @@ int lecture_fichier(char *filename, instance_t *instance) {
     format_error("Warning : no EOF token");
   }
 
-  printf("NAME  : %s\n", name);
-  printf("DIM   : %d\n", dim);
-
   strcpy(instance->name, name);
   strcpy(instance->type, "TSP");
   instance->dimension = dim;
@@ -131,13 +128,4 @@ int lecture_fichier(char *filename, instance_t *instance) {
   fclose(f);
 
   return 1;
-}
-
-int main(int argc, char const *argv[]) {
-  instance_t t;
-  lecture_fichier("test.txt", &t);
-  for (int i = 0; i < t.dimension; i++) {
-    printf("%d : (%d %d)\n", i, t.tabCoord[i][0], t.tabCoord[i][1]);
-  }
-  return 0;
 }

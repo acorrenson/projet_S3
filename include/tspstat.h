@@ -76,7 +76,7 @@ void hard_copy_tour(tour_t *t1, tour_t t2);
 bool next_permutation(int *tab, int dim);
 bool nextPermutation(int *array, int dim);
 double tour_length(instance_t instance, int *tabTour, bool sans_zero);
-int lecture_fichier(char *filename, instance_t *instance);
+int lecture_fichier(const char *filename, instance_t *instance);
 void compute_dist(instance_t *instance);
 double brute_force_tsp(instance_t instance, tour_t *tournee, tour_t *pire,
                        bool use_mat);
