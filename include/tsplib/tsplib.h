@@ -2,6 +2,7 @@
 #define TSPLIB_H
 
 #include <assert.h>
+#include <math.h>
 #include <pretty.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -20,7 +21,7 @@ typedef struct instance_s {
   double length;        // longueur de la tournée (calcul)
   int **tabCoord;   // tableau des coordonnées (x,y,marque=0 pas vu, n° ordre)
   double **matDist; // demie matrice des distances euclidiennes (calcul)
-  int *tabTour;     // tableau des villes formant la tournée (dans l'ordre) (calcul)
+  int *tabTour; // tableau des villes formant la tournée (dans l'ordre) (calcul)
 } instance_t;
 
 /**
@@ -58,53 +59,55 @@ void tour__init(tour_t *);
  * TSP.
  *
  */
-void instance__dist_euclidian(instance_t, int, int);
+double instance__dist_euclidian(instance_t *, int, int);
 
 /**
  * @brief Récupérer la distance qui sépare deux noeuds dans la matrice.
  *
  */
-void instance__dist_matrix(instance_t, int, int);
+double instance__dist_matrix(instance_t *, int, int);
 
 /**
  * @brief Calculer les distances entre tous les noeuds d'une instance TSP.
  *
  */
-void instance__compute_distances(instance_t);
+void instance__compute_distances(instance_t *);
 
 /**
  * @brief Assure qu'un tour comprend un noeud.
- * 
- * @return true 
- * @return false 
+ *
+ * @return true
+ * @return false
  */
-bool tour__has_node(tour_t, int);
+bool tour__has_node(tour_t *, int);
 
 /**
  * @brief Copie un tour à l'adresse souhaitée.
- * 
+ *
  */
 void tour__copy(tour_t *, tour_t);
 
 /**
  * @brief Mesure le nombre de noeuds d'un tour.
- * 
- * @return double 
+ *
+ * @return double
  */
 double tour__length(tour_t *);
 
 /**
  * @brief Mesure la distance effective d'un tour.
- * 
- * @return double 
+ *
+ * @return double
  */
 double tour__effective_length(tour_t *);
 
 /**
  * @brief Ajoute un noeud au tour.
- * 
- * @return double 
+ *
+ * @return double
  */
 double tour__add_node(tour_t *);
+
+void instance__print_matrix(instance_t *);
 
 #endif

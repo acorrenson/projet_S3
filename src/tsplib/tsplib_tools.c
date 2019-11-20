@@ -16,3 +16,63 @@ void tour__init(tour_t *tour) {
   tour->dimension = 0;
   tour->tour = NULL;
 }
+
+double instance__dist_euclidian(instance_t *instance, int a, int b) {
+  assert(0 <= a && a < instance->dimension);
+  assert(0 <= b && a < instance->dimension);
+
+  int x1 = instance->tabCoord[a][0];
+  int y1 = instance->tabCoord[a][1];
+  int x2 = instance->tabCoord[b][0];
+  int y2 = instance->tabCoord[b][1];
+
+  return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+}
+
+double instance__dist_matrix(instance_t *instance, int a, int b) {
+  assert(0 <= a && a < instance->dimension);
+  assert(0 <= b && a < instance->dimension);
+
+  // on utilise une demie matrice SUPERIEURE
+  if (a < b)
+    return instance->matDist[a][b];
+  else
+    return instance->matDist[b][a];
+}
+
+void instance__compute_distances(instance_t *instance) {
+  instance->matDist = malloc(instance->dimension * sizeof(double *));
+  for (int i = 0; i < instance->dimension; i++) {
+    instance->matDist[i] = malloc(instance->dimension * sizeof(double));
+  }
+
+  for (int i = 0; i < instance->dimension; i++) {
+    for (int j = i + 1; j < instance->dimension; j++) {
+      instance->matDist[i][j] = instance__dist_euclidian(instance, i, j);
+    }
+  }
+}
+
+void instance__print_matrix(instance_t *instance) {
+  printf("   ");
+  for (int i = 0; i < instance->dimension; i++) {
+    printf("%8d", i);
+  }
+  
+  printf("\n");
+  for (int i = 0; i < instance->dimension*8+3; i++) {
+    printf("-");
+  }
+
+  printf("\n");
+  for (int i = 0; i < instance->dimension; i++) {
+    printf("%d |", i);
+    for (int j = 0; j < instance->dimension; j++) {
+      if (j <= i)
+        printf("%8c", '.');
+      else
+        printf("%8.3f", instance->matDist[i][j]);
+    }
+    printf("\n");
+  }
+}
