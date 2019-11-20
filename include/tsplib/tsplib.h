@@ -1,3 +1,13 @@
+/**
+ * @file tsplib.h
+ * @author Arthur Correnson (arthur.correnson@univ-tlse3.fr)
+ * @brief 
+ * @version 0.1
+ * @date 2019-11-20
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
 #ifndef TSPLIB_H
 #define TSPLIB_H
 
