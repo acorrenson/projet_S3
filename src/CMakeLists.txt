@@ -7,17 +7,18 @@ include_directories(
   ../include/
 )
 
-add_library(tsplib_io
-  lecture_fichier_tsplib.c)
+add_library(tsplib
+  tsplib/tsplib_io.c
+  tsplib/tsplib_tools.c)
 
-target_include_directories(tsplib_io
-  PUBLIC
-  ./
-)
+# target_include_directories(tsplib_io
+#   PUBLIC
+#   ./
+# )
 
 # add the executable
-add_executable(Tsp tsp.c)  
+add_executable(Tsp tsp.c)
 
 target_link_libraries(Tsp
-  tsplib_io
+  tsplib
 )

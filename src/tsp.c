@@ -1,8 +1,8 @@
-#include <tspstat.h>
+#include <tsplib/tsplib.h>
 
 int main(int argc, char const *argv[]) {
   instance_t t;
-  lecture_fichier(argv[1], &t);
+  read_tsp_file(argv[1], &t);
 
   printf("NAME : %s\n", t.name);
   printf("TYPE : %s\n", t.type);
