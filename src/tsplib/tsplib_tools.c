@@ -26,6 +26,9 @@ double instance__dist_euclidian(instance_t *instance, int a, int b) {
   int x2 = instance->tabCoord[b][0];
   int y2 = instance->tabCoord[b][1];
 
+  double r = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+  // printf("(%d %d) (%d %d)\n", x1, x2, y1, y2);
+  // printf("r [%d %d] = %f\n", a, b, r);
   return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
@@ -54,13 +57,17 @@ void instance__compute_distances(instance_t *instance) {
 }
 
 void instance__print_matrix(instance_t *instance) {
+
+  int padd = 8;
+  int prec = 3;
+
   printf("   ");
   for (int i = 0; i < instance->dimension; i++) {
-    printf("%8d", i);
+    printf("%*d", padd, i);
   }
-  
+
   printf("\n");
-  for (int i = 0; i < instance->dimension*8+3; i++) {
+  for (int i = 0; i < instance->dimension * padd + 3; i++) {
     printf("-");
   }
 
@@ -69,9 +76,9 @@ void instance__print_matrix(instance_t *instance) {
     printf("%d |", i);
     for (int j = 0; j < instance->dimension; j++) {
       if (j <= i)
-        printf("%8c", '.');
+        printf("%*c", padd, '.');
       else
-        printf("%8.3f", instance->matDist[i][j]);
+        printf("%*.*f", padd, prec, instance->matDist[i][j]);
     }
     printf("\n");
   }

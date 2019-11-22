@@ -13,6 +13,15 @@ void format_error(char *s) {
 }
 
 /**
+ * @brief Print warning message in STDERR
+ *
+ * @param s
+ */
+void warning(char *s) {
+  fprintf(stderr, "Warning ( " COLOR_Y "%s" COLOR_N " )\n", s);
+}
+
+/**
  * @brief Test si une chaîne commence par un motif.
  *
  * @param motif Le motif
@@ -71,6 +80,10 @@ int read_tsp_file(const char *filename, instance_t *instance) {
     }
   }
   ret = sscanf(line, "DIMENSION : %d\n", &dim);
+  if (dim <= 0) {
+    format_error("DIMENSION cannot be 0");
+  }
+  dim++;
   if (ret == EOF || ret != 1) {
     format_error("Invalid field content for DIMENSION");
   }
@@ -92,17 +105,38 @@ int read_tsp_file(const char *filename, instance_t *instance) {
     instance->tabCoord[i] = malloc(4 * sizeof(int));
   }
 
+  int *check = malloc((dim - 1) * sizeof(int));
+  for (int i = 0; i < dim - 1; i++)
+    check[i] = 0;
+
   // parsing des données
-  for (int i = 0; i < dim; i++) {
+  for (int i = 0; i < dim - 1; i++) {
     fgets(line, sizeof(line), f);
     ret = sscanf(line, "%d %d %d\n", &ville, &abs, &ord);
+    if (ville >= dim || ville < 0) {
+      char *err = malloc(BUFSIZ);
+      sprintf(err, "Point n°%d is out of dimensions", ville);
+      format_error(err);
+    }
+    if (ville == 0) {
+      format_error("Point n°0 is reserved by TSPLIB");
+    }
     if (ret == EOF || ret != 3) {
       format_error("Invalid content in data section");
     } else {
+      check[ville - 1] = 1;
       instance->tabCoord[ville][0] = abs;
       instance->tabCoord[ville][1] = ord;
       instance->tabCoord[ville][2] = 0;
       instance->tabCoord[ville][3] = 0;
+    }
+  }
+
+  for (int i = 0; i < dim - 1; i++) {
+    if (check[i] == 0) {
+      char *err = malloc(BUFSIZ);
+      sprintf(err, "point n°%d is missing", i + 1);
+      format_error(err);
     }
   }
 
@@ -115,6 +149,10 @@ int read_tsp_file(const char *filename, instance_t *instance) {
   strcpy(instance->name, name);
   strcpy(instance->type, "TSP");
   instance->dimension = dim;
+  instance->tabCoord[0][0] = 0;
+  instance->tabCoord[0][1] = 0;
+  instance->tabCoord[0][2] = 0;
+  instance->tabCoord[0][3] = 0;
 
   fclose(f);
 
