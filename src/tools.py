@@ -92,9 +92,9 @@ def graphe(problem, tour, c):
     plt.show()
 
 
-os.chdir("../Code C/")
-print("Répertoire : ", os.getcwd())
-problem = tsplib95.load_problem("Data/att48.tsp")
+# os.chdir("../Code C/")
+# print("Répertoire : ", os.getcwd())
+problem = tsplib95.load_problem("./att10.tsp")
 
 
 start = time.time()

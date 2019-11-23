@@ -5,7 +5,7 @@ CC = /usr/bin/gcc
 all: build
 
 run: build
-	@ ./build/Tsp ./src/test.txt
+	@ ./build/Tsp ./src/att10.tsp
 
 test: build
 	@ cd build/ && ./Test

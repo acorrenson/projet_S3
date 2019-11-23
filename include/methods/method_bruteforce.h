@@ -12,6 +12,7 @@
 #define METHOD_BRUTEFORCE_H
 
 #include <stdbool.h>
+#include <tsplib/tsplib.h>
 
 /**
  * @brief Calcul la prochaine permutation dans l'ordre lexicographique.
@@ -22,5 +23,8 @@
  * @return false  Si permut n'a pas été modifiée (est la dernière permutation)
  */
 bool next_permutation(int * permut, int dim);
+
+void brute_force(instance_t *);
+
 
 #endif

@@ -1,3 +1,4 @@
+#include <methods/method_bruteforce.h>
 #include <tsplib/tsplib.h>
 
 int main(int argc, char const *argv[]) {
@@ -14,6 +15,8 @@ int main(int argc, char const *argv[]) {
 
   instance__compute_distances(&t);
   instance__print_matrix(&t);
+
+  brute_force(&t);
 
   return 0;
 }

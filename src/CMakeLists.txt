@@ -30,7 +30,10 @@ target_link_libraries(tsplib
 # =======================================
 
 # declare the executable
-add_executable(Tsp tsp.c)
+add_executable(Tsp 
+  utils.c
+  methods/method_bruteforce.c
+  tsp.c)
 
 target_link_libraries(Tsp
   tsplib
