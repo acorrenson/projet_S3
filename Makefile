@@ -1,9 +1,14 @@
 CC = /usr/bin/gcc
 
-.PHONY: build
+.PHONY: build all clean doc
+
+all: build
 
 run: build
 	@ ./build/Tsp ./src/test.txt
+
+test: build
+	@ ./build/Test
 
 build:
 	@	mkdir -p build

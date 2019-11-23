@@ -1,3 +1,7 @@
+# =======================================
+# == INIT ZONE 
+# =======================================
+
 cmake_minimum_required(VERSION 3.10)
 
 # set the project name
@@ -8,6 +12,10 @@ include_directories(
   ../include/
 )
 
+# =======================================
+# == LIBRARY ZONE 
+# =======================================
+
 # declare library TSPLIB
 add_library(tsplib
   tsplib/tsplib_io.c
@@ -17,10 +25,35 @@ target_link_libraries(tsplib
   m # math library
 )
 
+# =======================================
+# == EXECUTABLE ZONE 
+# =======================================
 
 # declare the executable
 add_executable(Tsp tsp.c)
 
 target_link_libraries(Tsp
   tsplib
+)
+
+# =======================================
+# == TEST ZONE
+# =======================================
+
+# declare library TESTINGLIB
+add_library(testinglib 
+  ../test/testing.c)
+
+# find test files
+file(GLOB tests "../test/*.test.c")
+
+# main module to run every tests
+add_executable(Test
+  ${tests}
+  ./utils.c 
+  ../test/all_test.c)
+
+target_link_libraries(Test
+  tsplib
+  testinglib
 )
