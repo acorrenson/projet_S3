@@ -53,7 +53,8 @@ file(COPY ../test/test.tsp DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # main module to run every tests
 add_executable(Test
   ${tests}
-  ./utils.c 
+  ./utils.c
+  ./methods/method_bruteforce.c
   ../test/all_test.c)
 
 target_link_libraries(Test

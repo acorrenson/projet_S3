@@ -18,9 +18,18 @@
 #define NIL -1       // indique l'échec dans une fonction
 
 /**
- * @brief Inverse un tableau d'entier
+ * @brief Inverse un tableau d'entiers
  *
  */
-void reverse(int *, int);
+void reverse(int *, int, int);
+
+/**
+ * @brief Trie un segment de tableau d'entiers
+ *
+ * @param tab Le tableau
+ * @param a   Indice de début de segment
+ * @param b   Indice de fin de segment
+ */
+void quick_sort(int *tab, int a, int b);
 
 #endif
