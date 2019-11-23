@@ -8,7 +8,7 @@ run: build
 	@ ./build/Tsp ./src/test.txt
 
 test: build
-	@ ./build/Test
+	@ cd build/ && ./Test
 
 build:
 	@	mkdir -p build

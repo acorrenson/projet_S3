@@ -9,7 +9,7 @@ void init_test(test_t *test, char *name) {
 
 void test_ensure(test_t *test, char *description, bool result) {
   test->size++;
-  printf("  - testing if " COLOR_Y "%s" COLOR_N "\n", description);
+  printf("  - ensures that " COLOR_Y "%s" COLOR_N "\n", description);
   if (result) {
     printf("  -> " COLOR_G "OK\n" COLOR_N);
     test->passed++;
@@ -24,6 +24,10 @@ void end_test(test_t *test) {
          test->passed, test->size);
 }
 
-bool array_equals(int *a, int *b, int d) {
+bool test_array_equals(int *a, int *b, int d) {
   return memcmp(a, b, d * sizeof(int)) == 0;
+}
+
+bool test_double_equals(double a, double b) {
+  return ((a - b) < 1e-3 && (a - b) > -1e-3);
 }

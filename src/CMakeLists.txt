@@ -47,6 +47,9 @@ add_library(testinglib
 # find test files
 file(GLOB tests "../test/*.test.c")
 
+# data for tests
+file(COPY ../test/test.tsp DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 # main module to run every tests
 add_executable(Test
   ${tests}

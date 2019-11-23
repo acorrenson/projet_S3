@@ -18,6 +18,6 @@ void test_function(test_t *, char *);
 void test_ensure(test_t *, char *, bool);
 void end_test(test_t *);
 
-bool array_equals(int *, int *, int);
-
+bool test_array_equals(int *, int *, int);
+bool test_double_equals(double a, double b);
 #endif
