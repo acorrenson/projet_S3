@@ -20,5 +20,10 @@ int main(int argc, char const *argv[]) {
 
   brute_force(&t, &res);
   tour__write_to_file(&res, stdout);
+  tour__write_graph_to_file(&res, stdout);
+  
+  // pour un affichage graphique
+  instance__set_tour(&t, &res);
+  instance__write_graph_to_file(&t, stdout, 100);
   return 0;
 }

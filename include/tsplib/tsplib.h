@@ -62,6 +62,10 @@ void instance__read_from_file(instance_t *, const char *);
  */
 void tour__write_to_file(tour_t *, FILE *);
 
+void instance__write_graph_to_file(instance_t *instance, FILE *file, int mag);
+
+void tour__write_graph_to_file(tour_t *instance, FILE *file);
+
 /**
  * @brief Ecriture d'une instance dans un fichier
  *
