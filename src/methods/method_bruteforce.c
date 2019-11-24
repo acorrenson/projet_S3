@@ -36,56 +36,77 @@ bool next_permutation(int *permut, int dim) {
   return true;
 }
 
-void brute_force(instance_t *instance) {
-  double max_dist = 0.0;
+// void brute_force(instance_t *instance) {
+//   double max_dist = 0.0;
 
-  int dim = instance->dimension - 1;
+//   int dim = instance->dimension - 1;
 
-  int *tour = malloc(dim * sizeof(int));
-  int *permut = malloc(dim * sizeof(int));
+//   int *tour = malloc(dim * sizeof(int));
+//   int *permut = malloc(dim * sizeof(int));
+
+//   for (int i = 0; i < dim; i++) {
+//     permut[i] = i + 1;
+//   }
+
+//   double dist = instance__dist_euclidian(instance, 0, permut[0]);
+
+//   int i1 = 0;
+//   int i2 = 1;
+//   while (i2 < dim) {
+//     dist += instance__dist_euclidian(instance, permut[i1], permut[i2]);
+//     i1++;
+//     i2++;
+//   }
+//   dist += instance__dist_euclidian(instance, permut[i2 - 1], 0);
+//   max_dist = dist;
+//   memcpy(tour, permut, dim * sizeof(int));
+
+//   while (next_permutation(permut, dim)) {
+//     dist = instance__dist_euclidian(instance, 0, permut[0]);
+//     i1 = 0;
+//     i2 = 1;
+//     while (i2 < dim) {
+//       dist += instance__dist_euclidian(instance, permut[i1], permut[i2]);
+//       i1++;
+//       i2++;
+//     }
+//     dist += instance__dist_euclidian(instance, permut[i2 - 1], 0);
+//     if (dist < max_dist) {
+//       max_dist = dist;
+//       for (int i = 0; i < dim; i++) {
+//         printf("%d ", permut[i]);
+//       }
+//       printf("\n");
+//       memcpy(tour, permut, dim * sizeof(int));
+//     }
+//   }
+
+//   for (int i = 0; i < dim; i++) {
+//     printf("%d ", tour[i] + 1);
+//   }
+
+//   printf("dist : %f\n", max_dist);
+
+//   printf("\n");
+// }
+
+void brute_force(instance_t *instance, tour_t *result) {
+  int dim = instance->dimension;
+  instance->tabTour = malloc(dim * sizeof(int));
 
   for (int i = 0; i < dim; i++) {
-    permut[i] = i + 1;
+    instance->tabTour[i] = i;
   }
 
-  double dist = instance__dist_euclidian(instance, 0, permut[0]);
+  tour_t best_tour;
+  instance__compute_length(instance);
+  instance__extract_tour(instance, &best_tour);
 
-  int i1 = 0;
-  int i2 = 1;
-  while (i2 < dim) {
-    dist += instance__dist_euclidian(instance, permut[i1], permut[i2]);
-    i1++;
-    i2++;
-  }
-  dist += instance__dist_euclidian(instance, permut[i2 - 1], 0);
-  max_dist = dist;
-  memcpy(tour, permut, dim * sizeof(int));
-
-  while (next_permutation(permut, dim)) {
-    dist = instance__dist_euclidian(instance, 0, permut[0]);
-    i1 = 0;
-    i2 = 1;
-    while (i2 < dim) {
-      dist += instance__dist_euclidian(instance, permut[i1], permut[i2]);
-      i1++;
-      i2++;
-    }
-    dist += instance__dist_euclidian(instance, permut[i2 - 1], 0);
-    if (dist < max_dist) {
-      max_dist = dist;
-      for (int i = 0; i < dim; i++) {
-        printf("%d ", permut[i]);
-      }
-      printf("\n");
-      memcpy(tour, permut, dim * sizeof(int));
+  while (next_permutation(instance->tabTour + 1, dim - 1)) {
+    if (instance__compute_length(instance) < best_tour.length) {
+      instance__extract_tour(instance, &best_tour);
     }
   }
 
-  for (int i = 0; i < dim; i++) {
-    printf("%d ", tour[i] + 1);
-  }
-
-  printf("dist : %f\n", max_dist);
-
-  printf("\n");
+  memcpy(result, &best_tour, sizeof(tour_t));
 }

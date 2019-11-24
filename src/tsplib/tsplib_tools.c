@@ -15,6 +15,7 @@ void tour__init(tour_t *tour) {
   tour->length = 0;
   tour->dimension = 0;
   tour->tour = NULL;
+  tour->current = 0;
 }
 
 double instance__dist_euclidian(instance_t *instance, int a, int b) {
@@ -56,30 +57,37 @@ void instance__compute_distances(instance_t *instance) {
   }
 }
 
-void instance__print_matrix(instance_t *instance) {
+void tour__set_dimension(tour_t *t, int dim) {
+  t->dimension = dim;
+  t->tour = malloc(dim * sizeof(int));
+}
 
-  int padd = 8;
-  int prec = 3;
+void tour__add_node(tour_t *t, int node) {
+  assert(0 <= node < t->dimension && t->current < t->dimension);
+  t->tour[t->current] = node;
+  t->current++;
+}
 
-  printf("   ");
+double instance__compute_length(instance_t *instance) {
+  int i = 0;
+  instance->length = 0.0;
+  while (i + 1 < instance->dimension) {
+    instance->length += instance__dist_euclidian(instance, instance->tabTour[i],
+                                                 instance->tabTour[i + 1]);
+    i++;
+  }
+  instance->length += instance__dist_euclidian(
+      instance, instance->tabTour[instance->dimension - 1],
+      instance->tabTour[0]);
+  return instance->length;
+}
+
+void instance__extract_tour(instance_t *instance, tour_t *tour) {
+  tour__init(tour);
+  tour__set_dimension(tour, instance->dimension);
   for (int i = 0; i < instance->dimension; i++) {
-    printf("%*d", padd, i);
+    tour__add_node(tour, instance->tabTour[i]);
   }
-
-  printf("\n");
-  for (int i = 0; i < instance->dimension * padd + 3; i++) {
-    printf("-");
-  }
-
-  printf("\n");
-  for (int i = 0; i < instance->dimension; i++) {
-    printf("%d |", i);
-    for (int j = 0; j < instance->dimension; j++) {
-      if (j <= i)
-        printf("%*c", padd, '.');
-      else
-        printf("%*.*f", padd, prec, instance->matDist[i][j]);
-    }
-    printf("\n");
-  }
+  strcpy(tour->name, instance->name);
+  tour->length = instance->length;
 }

@@ -32,4 +32,6 @@ void reverse(int *, int, int);
  */
 void quick_sort(int *tab, int a, int b);
 
+void swap(int *, int *);
+
 #endif

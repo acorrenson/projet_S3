@@ -8,7 +8,7 @@ void tsplib_run_test() {
   test_t test1;
   init_test(&test1, "testing tsplib");
 
-  read_tsp_file("./test.tsp", &test_instance);
+  instance__read_from_file(&test_instance, "./test.tsp");
   int tab[3][4] = {{0, 0, 0, 0}, {0, 1, 0, 0}, {2, 0, 0, 0}};
   bool check1 = strcmp(test_instance.name, "arthur") == 0;
   bool check2 = test_instance.dimension == 3;

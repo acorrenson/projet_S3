@@ -39,7 +39,7 @@ bool prefixe(char *motif, char buff[MAXBUF]) {
     return false;
 }
 
-int read_tsp_file(const char *filename, instance_t *instance) {
+void instance__read_from_file(instance_t *instance, const char *filename) {
 
   FILE *f = fopen(filename, "r");
 
@@ -132,6 +132,7 @@ int read_tsp_file(const char *filename, instance_t *instance) {
     }
   }
 
+  // verification des noeuds
   for (int i = 0; i < dim - 1; i++) {
     if (check[i] == 0) {
       char *err = malloc(BUFSIZ);
@@ -146,6 +147,7 @@ int read_tsp_file(const char *filename, instance_t *instance) {
     format_error("Warning : no EOF token");
   }
 
+  // sauvegarde des données lues
   strcpy(instance->name, name);
   strcpy(instance->type, "TSP");
   instance->dimension = dim;
@@ -155,6 +157,46 @@ int read_tsp_file(const char *filename, instance_t *instance) {
   instance->tabCoord[0][3] = 0;
 
   fclose(f);
-
-  return 0;
 }
+
+void instance__print_matrix(instance_t *instance) {
+  int padd = 8;
+  int prec = 3;
+
+  printf("   ");
+  for (int i = 0; i < instance->dimension; i++) {
+    printf("%*d", padd, i);
+  }
+
+  printf("\n");
+  for (int i = 0; i < instance->dimension * padd + 3; i++) {
+    printf("-");
+  }
+
+  printf("\n");
+  for (int i = 0; i < instance->dimension; i++) {
+    printf("%d |", i);
+    for (int j = 0; j < instance->dimension; j++) {
+      if (j <= i)
+        printf("%*c", padd, '.');
+      else
+        printf("%*.*f", padd, prec, instance->matDist[i][j]);
+    }
+    printf("\n");
+  }
+}
+
+void tour__write_to_file(tour_t *tour, FILE *output_chan) {
+  fprintf(output_chan, "NAME : %s\n", tour->name);
+  fprintf(output_chan, "TYPE : TOUR\n");
+  fprintf(output_chan, "DIMENSION : %d\n", tour->dimension);
+  fprintf(output_chan, "LENGTH : %f\n", tour->length);
+  fprintf(output_chan, "TOUR_SECTION\n");
+
+  for (int i = 0; i < tour->dimension; i++) {
+    fprintf(output_chan, "%d\n", tour->tour[i]);
+  }
+  fprintf(output_chan, "EOF\n");
+}
+
+void instance__write_to_file(instance_t *instance, FILE *file) {}

@@ -3,7 +3,7 @@
 
 int main(int argc, char const *argv[]) {
   instance_t t;
-  read_tsp_file(argv[1], &t);
+  instance__read_from_file(&t, argv[1]);
 
   printf("NAME : %s\n", t.name);
   printf("TYPE : %s\n", t.type);
@@ -16,7 +16,9 @@ int main(int argc, char const *argv[]) {
   instance__compute_distances(&t);
   instance__print_matrix(&t);
 
-  brute_force(&t);
+  tour_t res;
 
+  brute_force(&t, &res);
+  tour__write_to_file(&res, stdout);
   return 0;
 }
