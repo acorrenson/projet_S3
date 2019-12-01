@@ -61,10 +61,10 @@ void instance__read_from_file(instance_t *instance, const char *filename) {
   // parsing du champs NAME
   fgets(line, sizeof(line), f);
   while (!prefixe("NAME", line)) {
-    fgets(line, sizeof(line), f);
     if (feof(f)) {
       format_error("field NAME missing");
     }
+    fgets(line, sizeof(line), f);
   }
   ret = sscanf(line, "NAME : %s\n", name);
   if (ret == EOF || ret != 1) {
@@ -74,10 +74,10 @@ void instance__read_from_file(instance_t *instance, const char *filename) {
   // parsing du champs DIMENSION
   fgets(line, sizeof(line), f);
   while (!prefixe("DIMENSION", line)) {
-    fgets(line, sizeof(line), f);
     if (feof(f)) {
       format_error("field DIMENSION missing");
     }
+    fgets(line, sizeof(line), f);
   }
   ret = sscanf(line, "DIMENSION : %d\n", &dim);
   if (dim <= 0) {
@@ -92,12 +92,12 @@ void instance__read_from_file(instance_t *instance, const char *filename) {
   fgets(line, sizeof(line), f);
   while (!prefixe("DISPLAY_DATA_SECTION", line) &&
          !prefixe("NODE_COORD_SECTION", line)) {
-    fgets(line, sizeof(line), f);
     if (feof(f)) {
       format_error("field DISPLAY_DATA_SECTION"
-                   "or"
+                   " or "
                    "NODE_COORD_SECTION missing");
     }
+    fgets(line, sizeof(line), f);
   }
 
   instance->tabCoord = malloc(dim * sizeof(int *));
@@ -160,7 +160,7 @@ void instance__read_from_file(instance_t *instance, const char *filename) {
 }
 
 void instance__print_matrix(instance_t *instance) {
-  int padd = 8;
+  int padd = 12;
   int prec = 3;
 
   printf("   ");
@@ -215,8 +215,9 @@ void instance__write_graph_to_file(instance_t *instance, FILE *file, int mag) {
   fprintf(file, "digraph %s {\n", instance->name);
   for (int i = 0; i < instance->dimension; i++) {
     int index = instance->tabTour[i];
-    fprintf(file, "   %d [pos=\"%d,%d!\"];\n", index, instance->tabCoord[index][0]/mag,
-            instance->tabCoord[index][1]/mag);
+    fprintf(file, "   %d [pos=\"%d,%d!\"];\n", index,
+            instance->tabCoord[index][0] / mag,
+            instance->tabCoord[index][1] / mag);
   }
   for (int i = 0; i < instance->dimension - 1; i++) {
     fprintf(file, "   %d -> %d;\n", instance->tabTour[i],

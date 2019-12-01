@@ -29,10 +29,12 @@ target_link_libraries(tsplib
 # == EXECUTABLE ZONE 
 # =======================================
 
+file(GLOB methods "./methods/*.c")
+
 # declare the executable
 add_executable(Tsp 
   utils.c
-  methods/method_bruteforce.c
+  ${methods}
   tsp.c)
 
 target_link_libraries(Tsp
@@ -57,7 +59,7 @@ file(COPY ../test/test.tsp DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 add_executable(Test
   ${tests}
   ./utils.c
-  ./methods/method_bruteforce.c
+  ${methods}
   ../test/all_test.c)
 
 target_link_libraries(Test

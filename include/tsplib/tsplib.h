@@ -146,6 +146,19 @@ void tour__copy(tour_t *, tour_t);
 
 double instance__compute_length(instance_t *);
 
+/**
+ * @brief Extraire la tournée courante d'une instance et initialise une
+ * structure tour avec.
+ *
+ */
 void instance__extract_tour(instance_t *, tour_t *);
+
+/**
+ * @brief Copie de la tournée courante d'une instance dans une structure tour
+ * déjà initialisée pour l'instance (avec @ref instance__extract_tour
+ * typiquement).
+ *
+ */
+void instance__set_tour(instance_t *, tour_t *);
 
 #endif
