@@ -1,22 +1,5 @@
-#include <math.h>
-#include <tsplib/tsplib.h>
+#include <methods/method_2opt_optimisation.h>
 
-/**
- * @brief Type pour représenter un point du plan.
- *
- */
-typedef struct {
-  double x;
-  double y;
-} point_t;
-
-/**
- * @brief Clacul l'équation d'une droite passant par deux points.
- *
- * @param p1 Point 1
- * @param p2 Point 2
- * @return point_t  Equation de la droite (p1, p2)
- */
 point_t line_of_points(point_t p1, point_t p2) {
   assert(p1.x != p2.x || p1.y != p2.y);
   double m = (p1.y - p2.y) / (p1.x - p2.x);
@@ -25,13 +8,6 @@ point_t line_of_points(point_t p1, point_t p2) {
   return line;
 }
 
-/**
- * @brief Clacul le point d'ntersection entre deux droites.
- *
- * @param d1  Droite 1
- * @param d2  Droite 2
- * @return point_t  Intersection
- */
 point_t intersection(point_t d1, point_t d2) {
   assert(d1.x != d2.x);
   double a = (d2.y - d1.y) / (d1.x - d2.x);
@@ -40,67 +16,54 @@ point_t intersection(point_t d1, point_t d2) {
   return inter;
 }
 
-/**
- * @brief Test si deux droites se croisent.
- *
- */
 bool interesect(point_t d1, point_t d2) { return d1.x != d1.y; }
 
-/**
- * @brief Distance euclidienne entre deux points
- *
- */
 double dist(point_t p1, point_t p2) {
   return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }
 
-/**
- * @brief Clacul le centre d'un segment.
- *
- * @param p1  Extrémité 1 du segment.
- * @param p2  Extrémité 2 du segment.
- * @return    Centre.
- */
 point_t center_of_segment(point_t p1, point_t p2) {
-  double a;
-  if (p1.x < p2.x)
-    a = (p2.x - p1.x) / 2;
-  else
-    a = (p1.x - p2.x) / 2;
-
-  double b;
-  if (p1.y < p2.y)
-    b = (p2.y - p1.y) / 2;
-  else
-    b = (p1.y - p2.y) / 2;
+  double a, b;
+  a = (p2.x + p1.x) / 2;
+  b = (p2.y + p1.y) / 2;
 
   point_t center = {a, b};
   return center;
 }
 
-/**
- * @brief Test si deux segements se croisent.
- *
- * @param p1  Extrémité 1 du segment 1.
- * @param p2  Extrémité 2 du segment 1.
- * @param p3  Extrémité 1 du segment 2.
- * @param p4  Extrémité 2 du segment 2.
- */
 bool cross(point_t p1, point_t p2, point_t p3, point_t p4) {
   point_t d1 = line_of_points(p1, p2);
   point_t d2 = line_of_points(p3, p4);
-  point_t center = center_of_segment(p1, p2);
-  return dist(intersection(d1, d2), center) <= dist(p1, p2) / 2;
+  point_t center1 = center_of_segment(p1, p2);
+  point_t center2 = center_of_segment(p3, p4);
+  point_t inter = intersection(d1, d2);
+  return dist(inter, center1) < dist(p1, p2) / 2 &&
+         dist(inter, center2) < dist(p3, p4) / 2;
 }
 
-// int main() {
-//   point_t p1 = {0, 0};
-//   point_t p2 = {1, 1};
-//   point_t p3 = {0, 0.5};
-//   point_t p4 = {1, 2};
-
-//   printf("intersect ? %d\n",
-//          interesect(line_of_points(p1, p2), line_of_points(p3, p4)));
-
-//   printf("cross ? %d\n", cross(p1, p2, p3, p4));
-// }
+bool optimize_2opt(instance_t *instance) {
+  int dim = instance->dimension;
+  for (int i = 0; i < dim - 1; i++) {
+    for (int j = 0; j < dim; j++) {
+      if (i != j && i + 1 != (j + 1) % dim && i + 1 != j &&
+          (j + 1) % dim != i) {
+        int n1 = instance->tabTour[i];
+        int n2 = instance->tabTour[i + 1];
+        int n3 = instance->tabTour[j];
+        int n4 = instance->tabTour[(j + 1) % dim];
+        point_t p1 = {instance->tabCoord[n1][0], instance->tabCoord[n1][1]};
+        point_t p2 = {instance->tabCoord[n2][0], instance->tabCoord[n2][1]};
+        point_t p3 = {instance->tabCoord[n3][0], instance->tabCoord[n3][1]};
+        point_t p4 = {instance->tabCoord[n4][0], instance->tabCoord[n4][1]};
+        if (cross(p1, p2, p3, p4)) {
+          // printf("POSSIBLE OPT (%d %d)x(%d %d)!\n", n1, n2, n3, n4);
+          // decroiser
+          // -> inverser le chemin entre Noeud(i+1) et Noeud(j) (inclus)
+          reverse(instance->tabTour, (i + 1) % dim, j % dim);
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}

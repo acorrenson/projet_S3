@@ -23,12 +23,17 @@ int main(int argc, char const *argv[]) {
   // tour__write_to_file(&res, stdout);
   // tour__write_graph_to_file(&res, stdout);
 
-  // // pour un affichage graphique
+  // pour un affichage graphique
   // instance__set_tour(&t, &res);
   // instance__write_graph_to_file(&t, stdout, 100);
 
   nearest_neighbour(&t, &res);
   tour__write_to_file(&res, stdout);
+  instance__write_graph_to_file(&t, stdout, 100);
+
+  optimize_2opt(&t);
+  instance__compute_length(&t);
+  instance__write_graph_to_file(&t, stdout, 100);
 
   return 0;
 }

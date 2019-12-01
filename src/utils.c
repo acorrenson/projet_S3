@@ -1,6 +1,7 @@
 #include <utils.h>
 
 void reverse(int *tab, int beg, int end) {
+  assert(beg <= end);
   int i = beg;
   int j = end;
   int temp;
