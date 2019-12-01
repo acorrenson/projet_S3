@@ -94,5 +94,6 @@ void instance__extract_tour(instance_t *instance, tour_t *tour) {
 
 void instance__set_tour(instance_t *instance, tour_t *tour) {
   assert(instance->dimension == tour->dimension);
-  memcpy(instance->tabTour, tour->tour, tour->dimension *sizeof(int));
+  memcpy(instance->tabTour, tour->tour, tour->dimension * sizeof(int));
+  tour->length = instance->length;
 }

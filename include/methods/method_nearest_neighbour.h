@@ -14,6 +14,8 @@
 #include <stdbool.h>
 #include <tsplib/tsplib.h>
 
+void mark(instance_t *, int);
+bool marked(instance_t *, int);
 void nearest_neighbour(instance_t *instance, tour_t *result);
 
 #endif
