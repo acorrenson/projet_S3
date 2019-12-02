@@ -1,3 +1,4 @@
+#include <methods/method_2opt_optimisation.h>
 #include <methods/method_bruteforce.h>
 #include <methods/method_nearest_neighbour.h>
 #include <tsplib/tsplib.h>
@@ -19,21 +20,13 @@ int main(int argc, char const *argv[]) {
 
   tour_t res;
 
-  // brute_force(&t, &res);
-  // tour__write_to_file(&res, stdout);
-  // tour__write_graph_to_file(&res, stdout);
-
-  // pour un affichage graphique
-  // instance__set_tour(&t, &res);
-  // instance__write_graph_to_file(&t, stdout, 100);
-
   nearest_neighbour(&t, &res);
-  tour__write_to_file(&res, stdout);
-  instance__write_graph_to_file(&t, stdout, 100);
+  // tour__write_to_file(&res, stdout);
+  tour__write_coords_to_file(&t, &res, stdout);
 
-  optimize_2opt(&t);
-  instance__compute_length(&t);
-  instance__write_graph_to_file(&t, stdout, 100);
+  optimize_2opt(&t, &res);
+  // tour__write_to_file(&res, stdout);
+  tour__write_coords_to_file(&t, &res, stdout);
 
   return 0;
 }

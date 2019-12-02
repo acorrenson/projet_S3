@@ -62,9 +62,7 @@ void instance__read_from_file(instance_t *, const char *);
  */
 void tour__write_to_file(tour_t *, FILE *);
 
-void instance__write_graph_to_file(instance_t *instance, FILE *file, int mag);
-
-void tour__write_graph_to_file(tour_t *instance, FILE *file);
+void instance__write_coords_to_file(instance_t *instance, FILE *file);
 
 /**
  * @brief Ecriture d'une instance dans un fichier
@@ -77,6 +75,8 @@ void instance__write_to_file(instance_t *, FILE *);
  *
  */
 void instance__print_matrix(instance_t *);
+void instance__write_coords_to_file(instance_t *instance, FILE *file);
+void tour__write_coords_to_file(instance_t *, tour_t *, FILE *);
 
 // ==================================================
 // == INITIALISASIONS
@@ -145,6 +145,7 @@ bool tour__has_node(tour_t *, int);
 void tour__copy(tour_t *, tour_t);
 
 double instance__compute_length(instance_t *);
+double tour__compute_length(instance_t *, tour_t *);
 
 /**
  * @brief Extraire la tournée courante d'une instance et initialise une

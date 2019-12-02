@@ -12,11 +12,15 @@ def read_from_file(fn):
     return l
 
 
-def graphe(l):
-    long = len(l)
-    plt.plot([l[i % long][0] for i in range(long+1)],
-             [l[i % long][1] for i in range(long+1)], 'or-')
+def graphe(ll):
+    colors = ['r', 'g', 'c']
+    for i, l in enumerate(ll):
+        ic = i % 3
+        c = colors[ic]
+        long = len(l)
+        plt.plot([l[i % long][0] for i in range(long+1)],
+                 [l[i % long][1] for i in range(long+1)], 'o'+c+'-')
     plt.show()
 
 
-graphe(read_from_file(sys.argv[1]))
+graphe([read_from_file(sys.argv[i]) for i in range(1, len(sys.argv))])

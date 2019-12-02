@@ -63,6 +63,6 @@ point_t center_of_segment(point_t p1, point_t p2);
  */
 bool cross(point_t p1, point_t p2, point_t p3, point_t p4);
 
-bool optimize_2opt(instance_t *instance);
+bool optimize_2opt(instance_t *instance, tour_t *);
 
 #endif

@@ -201,29 +201,18 @@ void tour__write_to_file(tour_t *tour, FILE *output_chan) {
 
 void instance__write_to_file(instance_t *instance, FILE *file) {}
 
-void tour__write_graph_to_file(tour_t *tour, FILE *file) {
-  fprintf(file, "digraph %s {\n", tour->name);
-  for (int i = 0; i < tour->dimension - 1; i++) {
-    fprintf(file, "   %d -> %d;\n", tour->tour[i], tour->tour[i + 1]);
+void instance__write_coords_to_file(instance_t *instance, FILE *file) {
+  for (int i = 0; i < instance->dimension; i++) {
+    double x = instance->tabCoord[instance->tabTour[i]][0];
+    double y = instance->tabCoord[instance->tabTour[i]][1];
+    fprintf(file, "%f %f\n", x, y);
   }
-  fprintf(file, "   %d -> %d;\n", tour->tour[tour->dimension - 1],
-          tour->tour[0]);
-  fprintf(file, "}\n");
 }
 
-void instance__write_graph_to_file(instance_t *instance, FILE *file, int mag) {
-  fprintf(file, "digraph %s {\n", instance->name);
+void tour__write_coords_to_file(instance_t *instance, tour_t *t, FILE *file) {
   for (int i = 0; i < instance->dimension; i++) {
-    int index = instance->tabTour[i];
-    fprintf(file, "   %d [pos=\"%d,%d!\"];\n", index,
-            instance->tabCoord[index][0] / mag,
-            instance->tabCoord[index][1] / mag);
+    double x = instance->tabCoord[t->tour[i]][0];
+    double y = instance->tabCoord[t->tour[i]][1];
+    fprintf(file, "%f %f\n", x, y);
   }
-  for (int i = 0; i < instance->dimension - 1; i++) {
-    fprintf(file, "   %d -> %d;\n", instance->tabTour[i],
-            instance->tabTour[i + 1]);
-  }
-  fprintf(file, "   %d -> %d;\n", instance->tabTour[instance->dimension - 1],
-          instance->tabTour[0]);
-  fprintf(file, "}\n");
 }
