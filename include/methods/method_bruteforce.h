@@ -1,7 +1,7 @@
 /**
  * @file method_bruteforce.h
  * @author Arthur Correnson (arthur.correnson@univ-tlse3.fr)
- * @brief Method de recherche exhaustive pour les problèmes "TSP".
+ * @brief Methode de recherche exhaustive pour les problèmes "TSP".
  * @version 0.1
  * @date 2019-11-23
  *

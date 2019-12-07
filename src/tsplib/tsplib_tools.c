@@ -57,6 +57,12 @@ void instance__compute_distances(instance_t *instance) {
   }
 }
 
+void instance__reset(instance_t *instance) {
+  for (int i = 0; i < instance->dimension; i++) {
+    instance->tabCoord[i][2] = 0;
+  }
+}
+
 void tour__set_dimension(tour_t *t, int dim) {
   t->dimension = dim;
   t->tour = malloc(dim * sizeof(int));

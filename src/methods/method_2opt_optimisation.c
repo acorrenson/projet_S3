@@ -56,7 +56,7 @@ bool optimize_2opt(instance_t *instance, tour_t *tour) {
         point_t p3 = {instance->tabCoord[n3][0], instance->tabCoord[n3][1]};
         point_t p4 = {instance->tabCoord[n4][0], instance->tabCoord[n4][1]};
         if (cross(p1, p2, p3, p4)) {
-          printf("POSSIBLE OPT (%d %d)x(%d %d)!\n", n1, n2, n3, n4);
+          // printf("POSSIBLE OPT (%d %d)x(%d %d)!\n", n1, n2, n3, n4);
           // decroiser
           // -> inverser le chemin entre Noeud(i+1) et Noeud(j) (inclus)
           reverse(tour->tour, (i + 1) % dim, j % dim);

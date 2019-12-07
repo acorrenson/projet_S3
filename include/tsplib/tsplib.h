@@ -88,6 +88,8 @@ void tour__write_coords_to_file(instance_t *, tour_t *, FILE *);
  */
 void instance__init(instance_t *);
 
+void instance__reset(instance_t *);
+
 /**
  * @brief Initialisation d'un tour TSP.
  *
