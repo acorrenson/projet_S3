@@ -3,6 +3,9 @@ import sys
 
 
 def read_from_file(fn):
+    """
+        Read a sequence of coordinates from a csv file.
+    """
     l = []
     with open(fn, "r") as f:
         for line in f.readlines():
@@ -12,15 +15,18 @@ def read_from_file(fn):
     return l
 
 
-def graphe(ll):
-    colors = ['r', 'g', 'c']
+def graph(ll):
+    """
+        Plot a list of solutions to a TSP instance.
+    """
+    colors = ['r', 'g', 'c', 'y', 'm']
     for i, l in enumerate(ll):
-        ic = i % 3
+        ic = i % len(colors)
         c = colors[ic]
         long = len(l)
         plt.plot([l[i % long][0] for i in range(long+1)],
-                 [l[i % long][1] for i in range(long+1)], 'o'+c+'-')
+                 [l[i % long][1] for i in range(long+1)], f'o{c}-')
     plt.show()
 
 
-graphe([read_from_file(sys.argv[i]) for i in range(1, len(sys.argv))])
+graph([read_from_file(sys.argv[i]) for i in range(1, len(sys.argv))])

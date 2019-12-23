@@ -35,7 +35,8 @@ file(GLOB methods "./methods/*.c")
 add_executable(Tsp 
   utils.c
   ${methods}
-  tsp.c)
+  tsp.c
+)
 
 target_link_libraries(Tsp
   tsplib
@@ -47,7 +48,8 @@ target_link_libraries(Tsp
 
 # declare library TESTINGLIB
 add_library(testinglib 
-  ../test/testing.c)
+  ../test/testing.c
+)
 
 # find test files
 file(GLOB tests "../test/*.test.c")
@@ -60,8 +62,10 @@ add_executable(Test
   ${tests}
   ./utils.c
   ${methods}
-  ../test/all_test.c)
+  ../test/all_test.c
+)
 
+# link modules needed for tests
 target_link_libraries(Test
   tsplib
   testinglib
