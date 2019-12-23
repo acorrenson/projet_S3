@@ -25,13 +25,22 @@
  *
  */
 typedef struct instance_s {
-  char name[TAILLENOM]; // nom de l'instance
-  char type[TAILLENOM]; // type de l'instance
-  int dimension;        // nombre de sommets dans l'instance
-  double length;        // longueur de la tournée (calcul)
-  int **tabCoord;   // tableau des coordonnées (x,y,marque=0 pas vu, n° ordre)
-  double **matDist; // demie matrice des distances euclidiennes (calcul)
-  int *tabTour; // tableau des villes formant la tournée (dans l'ordre) (calcul)
+  //! nom de l'instance
+  char name[TAILLENOM];
+  //! type de l'instance
+  char type[TAILLENOM];
+  //! nombre de sommets dans l'instance
+  int dimension;
+  //! longueur de la tournée (calcul)
+  double length;
+  //! tableau des coordonnées (x,y,marque=0 pas vu, n° ordre)
+  int **tabCoord;
+  //! demie matrice des distances euclidiennes (calcul)
+  double **matDist;
+  //! tableau des villes formant la tournée (dans l'ordre) (calcul)
+  int *tabTour;
+  //! prise en compte de la ville (0, 0) (true par défaut)
+  bool node_zero;
 } instance_t;
 
 /**
@@ -39,10 +48,15 @@ typedef struct instance_s {
  *
  */
 typedef struct tour_s {
-  char name[TAILLENOM]; // nom de l'instance
-  int dimension;        // nombre de sommets dans l'instance
-  double length;        // longueur du tour (calculée ou lue)
-  int *tour; // liste des noeuds de la tournée lus dans le fichier tour
+  //! nom de l'instance
+  char name[TAILLENOM];
+  //! nombre de sommets dans l'instance
+  int dimension;
+  //! longueur du tour
+  double length;
+  //! liste des noeuds de la tournée
+  int *tour;
+  //! noeud courant
   int current;
 } tour_t;
 
@@ -54,10 +68,10 @@ typedef struct tour_s {
  * @brief   Lecture d'un fichier au format TSP
  *
  */
-void instance__read_from_file(instance_t *, const char *);
+void instance__read_from_file(instance_t *, const char *, bool);
 
 /**
- * @brief   Ecriture d'un tour dans un fichier.
+ * @brief Ecriture d'un tour dans un fichier.
  *
  */
 void tour__write_to_file(tour_t *, FILE *);
@@ -75,8 +89,25 @@ void instance__write_to_file(instance_t *, FILE *);
  *
  */
 void instance__print_matrix(instance_t *);
-void instance__write_coords_to_file(instance_t *instance, FILE *file);
-void tour__write_coords_to_file(instance_t *, tour_t *, FILE *);
+
+/**
+ * @brief Ecrire les coordonnées des sommets de la tournée en cours de calcul au
+ * format csv.
+ *
+ * @param instance L'instance.
+ * @param file Le fichier de sortie.
+ */
+void instance__save_to_csv(instance_t *instance, FILE *file);
+
+/**
+ * @brief Ecrire les coordonnées des sommets d'une tournée au
+ * format csv.
+ *
+ * @param instance L'instance de départ.
+ * @param tour La tournée.
+ * @param file Le fichier de sortie.
+ */
+void tour__save_to_csv(instance_t *instance, tour_t *tour, FILE *file);
 
 // ==================================================
 // == INITIALISASIONS
@@ -146,8 +177,22 @@ bool tour__has_node(tour_t *, int);
  */
 void tour__copy(tour_t *, tour_t);
 
+/**
+ * @brief Calculer la longueur de la tournée en cours de calcul dans une
+ * instance.
+ *
+ * @return double
+ */
 double instance__compute_length(instance_t *);
-double tour__compute_length(instance_t *, tour_t *);
+
+/**
+ * @brief Calculer la longueur d'une tournée.
+ *
+ * @param instance L'instance de départ.
+ * @param tour La tournée.
+ * @return double
+ */
+double tour__compute_length(instance_t *instance, tour_t *tour);
 
 /**
  * @brief Extraire la tournée courante d'une instance et initialise une
@@ -155,13 +200,5 @@ double tour__compute_length(instance_t *, tour_t *);
  *
  */
 void instance__extract_tour(instance_t *, tour_t *);
-
-/**
- * @brief Copie de la tournée courante d'une instance dans une structure tour
- * déjà initialisée pour l'instance (avec @ref instance__extract_tour
- * typiquement).
- *
- */
-void instance__set_tour(instance_t *, tour_t *);
 
 #endif

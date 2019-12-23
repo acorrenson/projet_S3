@@ -28,8 +28,6 @@ double instance__dist_euclidian(instance_t *instance, int a, int b) {
   int y2 = instance->tabCoord[b][1];
 
   double r = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-  // printf("(%d %d) (%d %d)\n", x1, x2, y1, y2);
-  // printf("r [%d %d] = %f\n", a, b, r);
   return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
@@ -95,25 +93,19 @@ double instance__compute_length(instance_t *instance) {
   for (int i = 0; i < instance->dimension; i++) {
     int n1 = instance->tabTour[i];
     int n2 = instance->tabTour[(i + 1) % (instance->dimension)];
-    double dist = instance__dist_euclidian(instance, n1, n2);
+    double dist = instance__dist_matrix(instance, n1, n2);
     instance->length += dist;
   }
   return instance->length;
-
-  // while (i + 1 < instance->dimension) {
-  //   instance->length += instance__dist_euclidian(instance,
-  //   instance->tabTour[i],
-  //                                                instance->tabTour[i +
-  //                                                1]);
-  //   i++;
-  // }
-  // instance->length += instance__dist_euclidian(
-  //     instance, instance->tabTour[instance->dimension - 1],
-  //     instance->tabTour[0]);
-
-  // return instance->length;
 }
 
+/**
+ * @brief Extraire la tournée courrante d'une instance dans une
+ * structure tour.
+ *
+ * @param instance
+ * @param tour
+ */
 void instance__extract_tour(instance_t *instance, tour_t *tour) {
   tour__init(tour);
   tour__set_dimension(tour, instance->dimension);
@@ -121,11 +113,5 @@ void instance__extract_tour(instance_t *instance, tour_t *tour) {
     tour__add_node(tour, instance->tabTour[i]);
   }
   strcpy(tour->name, instance->name);
-  tour->length = instance->length;
-}
-
-void instance__set_tour(instance_t *instance, tour_t *tour) {
-  assert(instance->dimension == tour->dimension);
-  memcpy(instance->tabTour, tour->tour, tour->dimension * sizeof(int));
   tour->length = instance->length;
 }

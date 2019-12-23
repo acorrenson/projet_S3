@@ -39,8 +39,10 @@ bool prefixe(char *motif, char buff[MAXBUF]) {
     return false;
 }
 
-void instance__read_from_file(instance_t *instance, const char *filename) {
+void instance__read_from_file(instance_t *instance, const char *filename,
+                              bool zero) {
 
+  assert(zero == 0 || zero == 1);
   FILE *f = fopen(filename, "r");
 
   if (f == NULL) {
@@ -55,8 +57,8 @@ void instance__read_from_file(instance_t *instance, const char *filename) {
   int dim;
   int ret;
   int ville;
-  int abs;
-  int ord;
+  int posx;
+  int posy;
 
   // parsing du champs NAME
   fgets(line, sizeof(line), f);
@@ -83,7 +85,7 @@ void instance__read_from_file(instance_t *instance, const char *filename) {
   if (dim <= 0) {
     format_error("DIMENSION cannot be 0");
   }
-  dim++;
+  dim++; // place pour la ville 0
   if (ret == EOF || ret != 1) {
     format_error("Invalid field content for DIMENSION");
   }
@@ -105,14 +107,14 @@ void instance__read_from_file(instance_t *instance, const char *filename) {
     instance->tabCoord[i] = malloc(4 * sizeof(int));
   }
 
-  int *check = malloc((dim - 1) * sizeof(int));
-  for (int i = 0; i < dim - 1; i++)
+  int *check = malloc((dim - zero) * sizeof(int));
+  for (int i = 0; i < dim - zero; i++)
     check[i] = 0;
 
   // parsing des données
   for (int i = 0; i < dim - 1; i++) {
     fgets(line, sizeof(line), f);
-    ret = sscanf(line, "%d %d %d\n", &ville, &abs, &ord);
+    ret = sscanf(line, "%d %d %d\n", &ville, &posx, &posy);
     if (ville >= dim || ville < 0) {
       char *err = malloc(BUFSIZ);
       sprintf(err, "Point n°%d is out of dimensions", ville);
@@ -125,8 +127,8 @@ void instance__read_from_file(instance_t *instance, const char *filename) {
       format_error("Invalid content in data section");
     } else {
       check[ville - 1] = 1;
-      instance->tabCoord[ville][0] = abs;
-      instance->tabCoord[ville][1] = ord;
+      instance->tabCoord[ville][0] = posx;
+      instance->tabCoord[ville][1] = posy;
       instance->tabCoord[ville][2] = 0;
       instance->tabCoord[ville][3] = 0;
     }
@@ -150,18 +152,30 @@ void instance__read_from_file(instance_t *instance, const char *filename) {
   // sauvegarde des données lues
   strcpy(instance->name, name);
   strcpy(instance->type, "TSP");
-  instance->dimension = dim;
-  instance->tabCoord[0][0] = 0;
-  instance->tabCoord[0][1] = 0;
-  instance->tabCoord[0][2] = 0;
-  instance->tabCoord[0][3] = 0;
+  if (zero) {
+    // Si besoin, on ajoute la ville 0 de position (0, 0)
+    instance->dimension = dim;
+    instance->tabCoord[0][0] = 0;
+    instance->tabCoord[0][1] = 0;
+    instance->tabCoord[0][2] = 0;
+    instance->tabCoord[0][3] = 0;
+  } else {
+    // sinon, on la retire...
+    instance->dimension = dim - 1;
+    // on libère la mémoire pour la ville 0
+    int **ptr1 = instance->tabCoord;
+    free(*ptr1);
+    free(ptr1);
+    // decallage du tableau
+    instance->tabCoord += 1;
+  }
 
   fclose(f);
 }
 
 void instance__print_matrix(instance_t *instance) {
-  int padd = 12;
-  int prec = 3;
+  int padd = 12; // decalage en espace
+  int prec = 3;  // précision d'affichage des floatants
 
   printf("   ");
   for (int i = 0; i < instance->dimension; i++) {
@@ -201,7 +215,7 @@ void tour__write_to_file(tour_t *tour, FILE *output_chan) {
 
 void instance__write_to_file(instance_t *instance, FILE *file) {}
 
-void instance__write_coords_to_file(instance_t *instance, FILE *file) {
+void instance__save_to_csv(instance_t *instance, FILE *file) {
   for (int i = 0; i < instance->dimension; i++) {
     double x = instance->tabCoord[instance->tabTour[i]][0];
     double y = instance->tabCoord[instance->tabTour[i]][1];
@@ -209,7 +223,7 @@ void instance__write_coords_to_file(instance_t *instance, FILE *file) {
   }
 }
 
-void tour__write_coords_to_file(instance_t *instance, tour_t *t, FILE *file) {
+void tour__save_to_csv(instance_t *instance, tour_t *t, FILE *file) {
   for (int i = 0; i < instance->dimension; i++) {
     double x = instance->tabCoord[t->tour[i]][0];
     double y = instance->tabCoord[t->tour[i]][1];

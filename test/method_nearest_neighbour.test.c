@@ -5,7 +5,7 @@ void method_nn_run_test() {
   test_t test;
   init_test(&test, "testing nearest-neighbour module");
   instance_t inst;
-  instance__read_from_file(&inst, "./test.tsp");
+  instance__read_from_file(&inst, "./test.tsp", true);
 
   mark(&inst, 0);
   bool check1 = inst.tabCoord[0][2] == 1;
