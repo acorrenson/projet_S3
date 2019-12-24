@@ -12,6 +12,9 @@
 #define UTILS_H
 
 #include <assert.h>
+#include <pretty.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 //! les noms sont limités à 32 caractères
 #define TAILLENOM 32
@@ -44,4 +47,5 @@ void quick_sort(int *tab, int a, int b);
  */
 void swap(int *, int *);
 
+FILE *read_or_fail(const char *, int);
 #endif

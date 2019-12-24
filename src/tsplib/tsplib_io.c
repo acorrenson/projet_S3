@@ -39,18 +39,9 @@ bool prefixe(char *motif, char buff[MAXBUF]) {
     return false;
 }
 
-void instance__read_from_file(instance_t *instance, const char *filename,
-                              bool zero) {
+void instance__read_from_file(instance_t *instance, FILE *f, bool zero) {
 
   assert(zero == 0 || zero == 1);
-  FILE *f = fopen(filename, "r");
-
-  if (f == NULL) {
-    fprintf(stderr,
-            "Echec de l'ouverture du fichier : " COLOR_Y "%s" COLOR_N "\n",
-            filename);
-    exit(1);
-  }
 
   char line[MAXBUF];
   char name[MAXBUF];
@@ -162,11 +153,11 @@ void instance__read_from_file(instance_t *instance, const char *filename,
   } else {
     // sinon, on la retire...
     instance->dimension = dim - 1;
-    // on libère la mémoire pour la ville 0
+    // ... on libère la mémoire pour la ville 0
     int **ptr1 = instance->tabCoord;
     free(*ptr1);
     free(ptr1);
-    // decallage du tableau
+    // .. et on decalle le tableau
     instance->tabCoord += 1;
   }
 

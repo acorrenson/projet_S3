@@ -72,7 +72,7 @@ void tour__add_node(tour_t *t, int node) {
   t->current++;
 }
 
-double tour__compute_length(instance_t *instance, tour_t *tour) {
+double tour__compute_length(instance_t *instance, tour_t *tour, bool optimize) {
   assert(tour->dimension == instance->dimension);
   int i = 0;
   tour->length = 0.0;
@@ -80,20 +80,30 @@ double tour__compute_length(instance_t *instance, tour_t *tour) {
   for (int i = 0; i < instance->dimension; i++) {
     int n1 = tour->tour[i];
     int n2 = tour->tour[(i + 1) % (instance->dimension)];
-    double dist = instance__dist_euclidian(instance, n1, n2);
+    double dist;
+    if (optimize) {
+      dist = instance__dist_matrix(instance, n1, n2);
+    } else {
+      dist = instance__dist_euclidian(instance, n1, n2);
+    }
     tour->length += dist;
   }
   return tour->length;
 }
 
-double instance__compute_length(instance_t *instance) {
+double instance__compute_length(instance_t *instance, bool optimize) {
   int i = 0;
   instance->length = 0.0;
 
   for (int i = 0; i < instance->dimension; i++) {
     int n1 = instance->tabTour[i];
     int n2 = instance->tabTour[(i + 1) % (instance->dimension)];
-    double dist = instance__dist_matrix(instance, n1, n2);
+    double dist;
+    if (optimize) {
+      dist = instance__dist_matrix(instance, n1, n2);
+    } else {
+      dist = instance__dist_euclidian(instance, n1, n2);
+    }
     instance->length += dist;
   }
   return instance->length;

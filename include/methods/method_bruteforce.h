@@ -24,6 +24,6 @@
  */
 bool next_permutation(int *permut, int dim);
 
-void brute_force(instance_t *, tour_t *);
+void brute_force(instance_t *, tour_t *, bool);
 
 #endif

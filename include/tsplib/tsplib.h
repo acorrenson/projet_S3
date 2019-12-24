@@ -68,7 +68,7 @@ typedef struct tour_s {
  * @brief   Lecture d'un fichier au format TSP
  *
  */
-void instance__read_from_file(instance_t *, const char *, bool);
+void instance__read_from_file(instance_t *, FILE *, bool);
 
 /**
  * @brief Ecriture d'un tour dans un fichier.
@@ -183,7 +183,7 @@ void tour__copy(tour_t *, tour_t);
  *
  * @return double
  */
-double instance__compute_length(instance_t *);
+double instance__compute_length(instance_t *, bool);
 
 /**
  * @brief Calculer la longueur d'une tournée.
@@ -192,7 +192,7 @@ double instance__compute_length(instance_t *);
  * @param tour La tournée.
  * @return double
  */
-double tour__compute_length(instance_t *instance, tour_t *tour);
+double tour__compute_length(instance_t *instance, tour_t *tour, bool);
 
 /**
  * @brief Extraire la tournée courante d'une instance et initialise une

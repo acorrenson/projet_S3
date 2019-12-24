@@ -1,11 +1,12 @@
 #include <methods/method_nearest_neighbour.h>
 #include <testing.h>
+#include <utils.h>
 
 void method_nn_run_test() {
   test_t test;
   init_test(&test, "testing nearest-neighbour module");
   instance_t inst;
-  instance__read_from_file(&inst, "./test.tsp", true);
+  instance__read_from_file(&inst, read_or_fail("./test.tsp", 0), true);
 
   mark(&inst, 0);
   bool check1 = inst.tabCoord[0][2] == 1;

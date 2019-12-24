@@ -60,7 +60,7 @@ bool optimize_2opt(instance_t *instance, tour_t *tour) {
           // decroiser
           // -> inverser le chemin entre Noeud(i+1) et Noeud(j) (inclus)
           reverse(tour->tour, (i + 1) % dim, j % dim);
-          tour__compute_length(instance, tour);
+          tour__compute_length(instance, tour, true);
           return true;
         }
       }

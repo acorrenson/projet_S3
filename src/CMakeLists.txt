@@ -34,6 +34,7 @@ file(GLOB methods "./methods/*.c")
 # declare the executable
 add_executable(Tsp 
   utils.c
+  cli.c
   ${methods}
   tsp.c
 )

@@ -33,5 +33,5 @@ void random_walk(instance_t *instance, tour_t *tour) {
     instance->tabCoord[random_node][2] = 1;
     tour__add_node(tour, random_node);
   }
-  tour__compute_length(instance, tour);
+  tour__compute_length(instance, tour, true);
 }

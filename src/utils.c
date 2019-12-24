@@ -44,3 +44,29 @@ void quick_sort(int *tab, int a, int b) {
     quick_sort(tab, i_pivot + 1, b);
   }
 }
+
+FILE *read_or_fail(const char *filename, int mode) {
+  FILE *f;
+  if (mode == 0) {
+    f = fopen(filename, "r");
+    if (f == NULL) {
+      fprintf(stderr,
+              "Echec de l'ouverture du fichier : " COLOR_Y "%s" COLOR_N "\n",
+              filename);
+      exit(1);
+    }
+  } else {
+    f = fopen(filename, "w");
+    fprintf(stderr,
+            COLOR_Y "[Warning] : " COLOR_N " creation du fichier " COLOR_Y
+                    "%s" COLOR_N "\n",
+            filename);
+    if (f == NULL) {
+      fprintf(stderr,
+              "Echec de l'ouverture du fichier : " COLOR_Y "%s" COLOR_N "\n",
+              filename);
+      exit(1);
+    }
+  }
+  return f;
+}

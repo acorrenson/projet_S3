@@ -69,6 +69,6 @@ void nearest_neighbour(instance_t *instance, tour_t *result) {
     index++;
   }
 
-  instance__compute_length(instance);
+  instance__compute_length(instance, true);
   instance__extract_tour(instance, result);
 }
