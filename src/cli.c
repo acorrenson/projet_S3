@@ -34,7 +34,7 @@ void cli(int argc, char const *argv[], cli_opt_t *opt) {
       opt->state[BAL_T] = true;
       if (i + 1 < argc) {
         i++;
-        opt->input_tour = read_or_fail(argv[i], 0);
+        opt->input_tour = read_or_fail(argv[i], 1);
       } else {
         fprintf(stderr, COLOR_R
                 "[cli - error] file expected after flag (-t)\n" COLOR_N);
@@ -112,11 +112,10 @@ void cli(int argc, char const *argv[], cli_opt_t *opt) {
     }
 
     else {
-      fprintf(stderr, COLOR_R "[cli - error] unknownd option %s\n" COLOR_N,
+      fprintf(stderr, COLOR_R "[cli - error] invalid option %s\n" COLOR_N,
               argv[i]);
       exit(1);
     }
-
     i++;
   }
 }

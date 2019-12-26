@@ -45,28 +45,40 @@ void quick_sort(int *tab, int a, int b) {
   }
 }
 
+/**
+ * @brief Interompt l'éxecution du programme avec un message spécialisé en cas
+ * d'erreur de lecture d'un fichier.
+ *
+ * @param filename Le nom du fichier causant l'erreur.
+ */
+void file_error(const char *filename) {
+  fprintf(stderr,
+          "[Error] while trying to opening file : " COLOR_R "%s\n" COLOR_N,
+          filename);
+  exit(1);
+}
+
+/**
+ * @brief Avertit l'utilisateur en cas de création d'un nouveaux fichier.
+ *
+ * @param filename Le nom du fichier.
+ */
+void file_warning(const char *filename) {
+  fprintf(stderr, "[Warning] creating file : " COLOR_Y "%s\n" COLOR_N,
+          filename);
+}
+
 FILE *read_or_fail(const char *filename, int mode) {
   FILE *f;
   if (mode == 0) {
     f = fopen(filename, "r");
-    if (f == NULL) {
-      fprintf(stderr,
-              "Echec de l'ouverture du fichier : " COLOR_Y "%s" COLOR_N "\n",
-              filename);
-      exit(1);
-    }
+    if (f == NULL)
+      file_error(filename);
   } else {
     f = fopen(filename, "w");
-    fprintf(stderr,
-            COLOR_Y "[Warning] : " COLOR_N " creation du fichier " COLOR_Y
-                    "%s" COLOR_N "\n",
-            filename);
-    if (f == NULL) {
-      fprintf(stderr,
-              "Echec de l'ouverture du fichier : " COLOR_Y "%s" COLOR_N "\n",
-              filename);
-      exit(1);
-    }
+    file_warning(filename);
+    if (f == NULL)
+      file_error(filename);
   }
   return f;
 }

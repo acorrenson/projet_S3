@@ -71,18 +71,12 @@ typedef struct tour_s {
 void instance__read_from_file(instance_t *, FILE *, bool);
 
 /**
- * @brief Ecriture d'un tour dans un fichier.
+ * @brief Ecriture d'un tour dans un fichier (au format .tour).
  *
+ * @param zero Précise si la numérotation des noeuds commence à zero ou le cas
+ * contraire à 1.
  */
-void tour__write_to_file(tour_t *, FILE *);
-
-void instance__write_coords_to_file(instance_t *instance, FILE *file);
-
-/**
- * @brief Ecriture d'une instance dans un fichier
- *
- */
-void instance__write_to_file(instance_t *, FILE *);
+void tour__write_as_tsp(tour_t *, FILE *, bool zero);
 
 /**
  * @brief Affiche la matrice des distances d'une instance.
@@ -91,23 +85,24 @@ void instance__write_to_file(instance_t *, FILE *);
 void instance__print_matrix(instance_t *);
 
 /**
- * @brief Ecrire les coordonnées des sommets de la tournée en cours de calcul au
- * format csv.
+ * @brief Ecrire les coordonnées des sommets de la tournée en cours de calcul
+ * dans le format de de fichier du script "graph.py".
  *
  * @param instance L'instance.
  * @param file Le fichier de sortie.
  */
-void instance__save_to_csv(instance_t *instance, FILE *file);
+void instance__write_as_gpy(instance_t *instance, FILE *file);
 
 /**
- * @brief Ecrire les coordonnées des sommets d'une tournée au
- * format csv.
+ * @brief Ecrire les coordonnées des sommets d'une tournée dans le format
+ * de fichier du script "graph.py".
+ * .
  *
  * @param instance L'instance de départ.
  * @param tour La tournée.
  * @param file Le fichier de sortie.
  */
-void tour__save_to_csv(instance_t *instance, tour_t *tour, FILE *file);
+void tour__write_as_gpy(instance_t *instance, tour_t *tour, FILE *file);
 
 // ==================================================
 // == INITIALISASIONS
@@ -119,6 +114,11 @@ void tour__save_to_csv(instance_t *instance, tour_t *tour, FILE *file);
  */
 void instance__init(instance_t *);
 
+/**
+ * @brief Réinitialisation d'une instance TSP.
+ * (Les marqueurs sont remis à 0).
+ *
+ */
 void instance__reset(instance_t *);
 
 /**
@@ -152,30 +152,26 @@ void tour__set_dimension(tour_t *, int);
 double instance__dist_euclidian(instance_t *, int, int);
 
 /**
- * @brief Récupérer la distance qui sépare deux noeuds dans la matrice.
+ * @brief Récupérer la distance qui sépare deux noeuds dans la matrice des
+ * distances (suppose que la méthode @ref instance__compute_distances ait déjà
+ * été appellée au moins une fois avant).
  *
  */
 double instance__dist_matrix(instance_t *, int, int);
 
 /**
- * @brief Calculer les distances entre tous les noeuds d'une instance TSP.
+ * @brief Initialise la matrice des distances dans une instance TSP.
  *
  */
 void instance__compute_distances(instance_t *);
 
 /**
- * @brief Assure qu'un tour comprend un noeud.
+ * @brief Assure qu'un tour comprend un noeud donné.
  *
  * @return true
  * @return false
  */
 bool tour__has_node(tour_t *, int);
-
-/**
- * @brief Copie un tour à l'adresse souhaitée.
- *
- */
-void tour__copy(tour_t *, tour_t);
 
 /**
  * @brief Calculer la longueur de la tournée en cours de calcul dans une
@@ -188,15 +184,15 @@ double instance__compute_length(instance_t *, bool);
 /**
  * @brief Calculer la longueur d'une tournée.
  *
- * @param instance L'instance de départ.
+ * @param instance L'instance de référence.
  * @param tour La tournée.
  * @return double
  */
 double tour__compute_length(instance_t *instance, tour_t *tour, bool);
 
 /**
- * @brief Extraire la tournée courante d'une instance et initialise une
- * structure tour avec.
+ * @brief Extraire la tournée courante d'une instance et
+ * initialise une structure @ref tour_t avec.
  *
  */
 void instance__extract_tour(instance_t *, tour_t *);

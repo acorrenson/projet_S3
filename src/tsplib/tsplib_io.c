@@ -3,12 +3,11 @@
 /**
  * @brief Exit program due to TSP file format read
  *
- * @param s
  */
-void format_error(char *s) {
+void format_error(char *message) {
   fprintf(stderr,
-          "Format du fichier TSB incompatible ( " COLOR_R "%s" COLOR_N " )\n",
-          s);
+          "[Error] violation of TSP format : " COLOR_R "%s\n" COLOR_N,
+          message);
   exit(1);
 }
 
@@ -18,7 +17,7 @@ void format_error(char *s) {
  * @param s
  */
 void warning(char *s) {
-  fprintf(stderr, "Warning ( " COLOR_Y "%s" COLOR_N " )\n", s);
+  fprintf(stderr, "[Warning] " COLOR_Y "%s\n" COLOR_N, s);
 }
 
 /**
@@ -137,7 +136,7 @@ void instance__read_from_file(instance_t *instance, FILE *f, bool zero) {
   // parsing du champs EOF
   fgets(line, sizeof(line), f);
   if (!prefixe("EOF", line)) {
-    format_error("Warning : no EOF token");
+    format_error("Filed EOF is missing");
   }
 
   // sauvegarde des données lues
@@ -191,22 +190,24 @@ void instance__print_matrix(instance_t *instance) {
   }
 }
 
-void tour__write_to_file(tour_t *tour, FILE *output_chan) {
-  fprintf(output_chan, "NAME : %s\n", tour->name);
-  fprintf(output_chan, "TYPE : TOUR\n");
-  fprintf(output_chan, "DIMENSION : %d\n", tour->dimension);
-  fprintf(output_chan, "LENGTH : %f\n", tour->length);
-  fprintf(output_chan, "TOUR_SECTION\n");
+void tour__write_as_tsp(tour_t *tour, FILE *file, bool zero) {
+  fprintf(file, "NAME : %s\n", tour->name);
+  fprintf(file, "TYPE : TOUR\n");
+  fprintf(file, "DIMENSION : %d\n", tour->dimension);
+  fprintf(file, "LENGTH : %f\n", tour->length);
+  fprintf(file, "TOUR_SECTION\n");
 
   for (int i = 0; i < tour->dimension; i++) {
-    fprintf(output_chan, "%d\n", tour->tour[i]);
+    if (zero) {
+      fprintf(file, "%d\n", tour->tour[i]);
+    } else {
+      fprintf(file, "%d\n", tour->tour[i] + 1);
+    }
   }
-  fprintf(output_chan, "EOF\n");
+  fprintf(file, "EOF\n");
 }
 
-void instance__write_to_file(instance_t *instance, FILE *file) {}
-
-void instance__save_to_csv(instance_t *instance, FILE *file) {
+void instance__write_as_gpy(instance_t *instance, FILE *file) {
   for (int i = 0; i < instance->dimension; i++) {
     double x = instance->tabCoord[instance->tabTour[i]][0];
     double y = instance->tabCoord[instance->tabTour[i]][1];
@@ -214,7 +215,7 @@ void instance__save_to_csv(instance_t *instance, FILE *file) {
   }
 }
 
-void tour__save_to_csv(instance_t *instance, tour_t *t, FILE *file) {
+void tour__write_as_gpy(instance_t *instance, tour_t *t, FILE *file) {
   for (int i = 0; i < instance->dimension; i++) {
     double x = instance->tabCoord[t->tour[i]][0];
     double y = instance->tabCoord[t->tour[i]][1];

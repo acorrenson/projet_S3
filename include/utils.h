@@ -47,5 +47,14 @@ void quick_sort(int *tab, int a, int b);
  */
 void swap(int *, int *);
 
-FILE *read_or_fail(const char *, int);
+/**
+ * @brief Essaye d'ouvrir un fichier, interrompt l'execution du programme si
+ * l'ouverture est impossible.
+ *
+ * @param name    Le nom du fichier.
+ * @param mode    Le mode (0 lecture, 1 écriture)
+ * @return FILE*  Le fichier ouvert.
+ */
+FILE *read_or_fail(const char *name, int mode);
+
 #endif
