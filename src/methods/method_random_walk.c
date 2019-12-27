@@ -21,9 +21,15 @@ int peek_one_randomly(instance_t *instance) {
 void random_walk(instance_t *instance, tour_t *tour) {
   srand(time(NULL));
   int random_node;
+
+  // initialisation de la tournée
   tour__init(tour);
   tour__set_dimension(tour, instance->dimension);
   tour__add_node(tour, 0);
+
+  // réinitialisation de l'instance
+  instance__reset(instance);
+
   instance->tabCoord[0][2] = 1;
 
   for (int i = 1; i < instance->dimension; i++) {

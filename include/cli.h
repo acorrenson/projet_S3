@@ -50,7 +50,8 @@
 typedef struct {
   FILE *input_instance;
   FILE *input_tour;
-  FILE *output;
+  FILE *output_csv;
+  FILE *output_tour;
   FILE *log;
   FILE *gpycsv;
   bool state[13];

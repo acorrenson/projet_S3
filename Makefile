@@ -5,7 +5,7 @@ CC = /usr/bin/gcc
 all: build
 
 run: build
-	@ ./build/Tsp -f ./data/att10.tsp -v -bf
+	@ ./build/Tsp -f ./data/att10.tsp -bf -bfm -rw -ppv -v -nz -2opt -o ./data/results.csv
 
 test: build
 	@ cd build/ && ./Test

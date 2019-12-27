@@ -3,7 +3,8 @@
 void cli_opt__init(cli_opt_t *opt) {
   opt->input_instance = stdin;
   opt->input_tour = NULL;
-  opt->output = stdout;
+  opt->output_tour = stdout;
+  opt->output_csv = stdout;
   opt->log = stderr;
   for (int i = 0; i < BAL_COUNT; i++) {
     opt->state[i] = false;
@@ -34,7 +35,7 @@ void cli(int argc, char const *argv[], cli_opt_t *opt) {
       opt->state[BAL_T] = true;
       if (i + 1 < argc) {
         i++;
-        opt->input_tour = read_or_fail(argv[i], 1);
+        opt->output_tour = read_or_fail(argv[i], 1);
       } else {
         fprintf(stderr, COLOR_R
                 "[cli - error] file expected after flag (-t)\n" COLOR_N);
@@ -56,7 +57,7 @@ void cli(int argc, char const *argv[], cli_opt_t *opt) {
       opt->state[BAL_O] = true;
       if (i + 1 < argc) {
         i++;
-        opt->output = read_or_fail(argv[i], 1);
+        opt->output_csv = read_or_fail(argv[i], 1);
       } else {
         fprintf(stderr, COLOR_R
                 "[cli - error] file expected after flag (-o)\n" COLOR_N);
