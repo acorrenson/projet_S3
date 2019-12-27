@@ -45,6 +45,7 @@ void brute_force(instance_t *instance, tour_t *result, bool optimize) {
   }
 
   tour_t best_tour;
+
   instance__compute_length(instance, optimize);
   instance__extract_tour(instance, &best_tour);
 

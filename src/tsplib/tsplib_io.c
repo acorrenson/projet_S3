@@ -5,8 +5,7 @@
  *
  */
 void format_error(char *message) {
-  fprintf(stderr,
-          "[Error] violation of TSP format : " COLOR_R "%s\n" COLOR_N,
+  fprintf(stderr, "[Error] violation of TSP format : " COLOR_R "%s\n" COLOR_N,
           message);
   exit(1);
 }
@@ -205,20 +204,4 @@ void tour__write_as_tsp(tour_t *tour, FILE *file, bool zero) {
     }
   }
   fprintf(file, "EOF\n");
-}
-
-void instance__write_as_gpy(instance_t *instance, FILE *file) {
-  for (int i = 0; i < instance->dimension; i++) {
-    double x = instance->tabCoord[instance->tabTour[i]][0];
-    double y = instance->tabCoord[instance->tabTour[i]][1];
-    fprintf(file, "%f %f\n", x, y);
-  }
-}
-
-void tour__write_as_gpy(instance_t *instance, tour_t *t, FILE *file) {
-  for (int i = 0; i < instance->dimension; i++) {
-    double x = instance->tabCoord[t->tour[i]][0];
-    double y = instance->tabCoord[t->tour[i]][1];
-    fprintf(file, "%f %f\n", x, y);
-  }
 }

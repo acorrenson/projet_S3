@@ -84,26 +84,6 @@ void tour__write_as_tsp(tour_t *, FILE *, bool zero);
  */
 void instance__print_matrix(instance_t *);
 
-/**
- * @brief Ecrire les coordonnées des sommets de la tournée en cours de calcul
- * dans le format de de fichier du script "graph.py".
- *
- * @param instance L'instance.
- * @param file Le fichier de sortie.
- */
-void instance__write_as_gpy(instance_t *instance, FILE *file);
-
-/**
- * @brief Ecrire les coordonnées des sommets d'une tournée dans le format
- * de fichier du script "graph.py".
- * .
- *
- * @param instance L'instance de départ.
- * @param tour La tournée.
- * @param file Le fichier de sortie.
- */
-void tour__write_as_gpy(instance_t *instance, tour_t *tour, FILE *file);
-
 // ==================================================
 // == INITIALISASIONS
 // ==================================================

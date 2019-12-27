@@ -45,12 +45,16 @@ point_t intersection(point_t d1, point_t d2);
 /**
  * @brief Test si deux droites se croisent.
  *
+ * @param d1 Droite 1.
+ * @param d2 Droite 2.
  */
 bool interesect(point_t d1, point_t d2);
 
 /**
- * @brief Distance euclidienne entre deux points
+ * @brief Distance euclidienne entre deux points.
  *
+ * @param p1 Point 1.
+ * @param p2 Point 2.
  */
 double dist(point_t p1, point_t p2);
 

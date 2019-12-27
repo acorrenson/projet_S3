@@ -48,12 +48,14 @@
 #define BAL_GPY 12
 
 typedef struct {
+  //! Fichier TSP en entrée
   FILE *input_instance;
-  FILE *input_tour;
+  //! Fichier CSV en sortie (par défaut stdout)
   FILE *output_csv;
+  //! Fichier TOUR en sortie (optionnel)
   FILE *output_tour;
+  //! Fichier de log (par défaut stderr)
   FILE *log;
-  FILE *gpycsv;
   bool state[13];
 } cli_opt_t;
 
