@@ -37,9 +37,7 @@ bool prefixe(char *motif, char buff[MAXBUF]) {
     return false;
 }
 
-void instance__read_from_file(instance_t *instance, FILE *f, bool zero) {
-
-  assert(zero == 0 || zero == 1);
+void instance__read_from_file(instance_t *instance, FILE *f) {
 
   char line[MAXBUF];
   char name[MAXBUF];
@@ -48,6 +46,10 @@ void instance__read_from_file(instance_t *instance, FILE *f, bool zero) {
   int ville;
   int posx;
   int posy;
+  int zero;
+  
+  if (instance->node_zero) zero = 1;
+  else zero = 0;
 
   // parsing du champs NAME
   fgets(line, sizeof(line), f);
@@ -165,10 +167,14 @@ void instance__read_from_file(instance_t *instance, FILE *f, bool zero) {
 void instance__print_matrix(instance_t *instance) {
   int padd = 12; // decalage en espace
   int prec = 3;  // précision d'affichage des floatants
+  int zero;
+  
+  if (instance->node_zero) zero = 0;
+  else zero = 1;
 
   printf("   ");
   for (int i = 0; i < instance->dimension; i++) {
-    printf("%*d", padd, i);
+      printf("%*d", padd, i+zero);
   }
 
   printf("\n");
@@ -178,7 +184,7 @@ void instance__print_matrix(instance_t *instance) {
 
   printf("\n");
   for (int i = 0; i < instance->dimension; i++) {
-    printf("%d |", i);
+    printf("%d |", i+zero);
     for (int j = 0; j < instance->dimension; j++) {
       if (j <= i)
         printf("%*c", padd, '.');

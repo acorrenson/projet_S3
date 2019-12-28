@@ -8,9 +8,8 @@ void tsplib_run_test() {
 
   test_t test1;
   init_test(&test1, "testing tsplib");
-
-  instance__read_from_file(&test_instance, read_or_fail("./test.tsp", 0),
-                           false);
+  instance__init(&test_instance, false);
+  instance__read_from_file(&test_instance, read_or_fail("./test.tsp", 0));
   int tab2[2][4] = {{0, 1, 0, 0}, {2, 0, 0, 0}};
   bool check1 = strcmp(test_instance.name, "arthur") == 0;
   bool check2 = test_instance.dimension == 2;
@@ -19,7 +18,8 @@ void tsplib_run_test() {
   test_ensure(&test1, "TSP files are read correctly (non zero mode)",
               check1 && check2 && check3 && check4);
 
-  instance__read_from_file(&test_instance, read_or_fail("./test.tsp", 0), true);
+  instance__init(&test_instance, true);
+  instance__read_from_file(&test_instance, read_or_fail("./test.tsp", 0));
   int tab[3][4] = {{0, 0, 0, 0}, {0, 1, 0, 0}, {2, 0, 0, 0}};
   bool check5 = strcmp(test_instance.name, "arthur") == 0;
   bool check6 = test_instance.dimension == 3;

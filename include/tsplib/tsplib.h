@@ -68,7 +68,7 @@ typedef struct tour_s {
  * @brief   Lecture d'un fichier au format TSP
  *
  */
-void instance__read_from_file(instance_t *, FILE *, bool);
+void instance__read_from_file(instance_t *, FILE *);
 
 /**
  * @brief Ecriture d'un tour dans un fichier (au format .tour).
@@ -92,7 +92,7 @@ void instance__print_matrix(instance_t *);
  * @brief Initialisation d'une instance TSP.
  *
  */
-void instance__init(instance_t *);
+void instance__init(instance_t *, bool);
 
 /**
  * @brief Réinitialisation d'une instance TSP.

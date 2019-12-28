@@ -1,6 +1,6 @@
 #include <tsplib/tsplib.h>
 
-void instance__init(instance_t *instance) {
+void instance__init(instance_t *instance, bool zero) {
   strcpy(instance->name, "NO_NAME");
   strcpy(instance->type, "NO_TYPE");
   instance->dimension = 0;
@@ -8,6 +8,7 @@ void instance__init(instance_t *instance) {
   instance->tabCoord = NULL;
   instance->matDist = NULL;
   instance->tabTour = NULL;
+  instance->node_zero = zero;
 }
 
 void tour__init(tour_t *tour) {

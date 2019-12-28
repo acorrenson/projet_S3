@@ -28,6 +28,11 @@ const char methods[METHODS_NUMBER][BUFSIZ] = {
 void write_results_as_csv(instance_t *instance, tour_t sols[METHODS_NUMBER],
                           double times[METHODS_NUMBER], cli_opt_t *opt) {
   FILE *file = opt->output_csv;
+  int zero;
+  if (opt->state[BAL_ZERO])
+    zero = 1;
+  else
+    zero = 0;
 
   // Ecriture de la partie INSTANCE
   fprintf(file, "Nom de l'instance ; %s\n", instance->name);
@@ -39,13 +44,8 @@ void write_results_as_csv(instance_t *instance, tour_t sols[METHODS_NUMBER],
   fprintf(file, "Type ; %s\n", instance->type);
   fprintf(file, "Point ; Abs ; Ord\n");
   for (int j = 0; j < instance->dimension; j++) {
-    if (opt->state[BAL_ZERO]) {
-      fprintf(file, "%6d ; %6d; %6d\n", j + 1, instance->tabCoord[j][0],
-              instance->tabCoord[j][1]);
-    } else {
-      fprintf(file, "%6d ; %6d; %6d\n", j, instance->tabCoord[j][0],
-              instance->tabCoord[j][1]);
-    }
+    fprintf(file, "%6d ; %6d; %6d\n", j + zero, instance->tabCoord[j][0],
+            instance->tabCoord[j][1]);
   }
 
   // Ecriture de la partie RESULTATS
@@ -55,11 +55,7 @@ void write_results_as_csv(instance_t *instance, tour_t sols[METHODS_NUMBER],
       fprintf(file, "%s ; %.2f ; %.2f ; [", methods[i], sols[i].length,
               times[i]);
       for (int j = 0; j < sols[i].dimension - 1; j++) {
-        if (opt->state[BAL_ZERO]) {
-          fprintf(file, "%d, ", sols[i].tour[j] + 1);
-        } else {
-          fprintf(file, "%d, ", sols[i].tour[j]);
-        }
+        fprintf(file, "%d, ", sols[i].tour[j] + zero);
       }
       fprintf(file, "%d]\n", sols[i].tour[sols[i].dimension - 1]);
     }
@@ -98,7 +94,7 @@ int main(int argc, char const *argv[]) {
   // == Lecture des entrées
   // ====================================
 
-  instance__read_from_file(&instance, opt.input_instance, !opt.state[BAL_ZERO]);
+  instance__read_from_file(&instance, opt.input_instance);
   instance__compute_distances(&instance);
 
   // === Affichage de la matrice des distances (verbose) ===
@@ -179,10 +175,10 @@ int main(int argc, char const *argv[]) {
         }
         fprintf(opt.log, "(%f)\n", res[SOL_NN].length);
       }
-      
+
       // calcul
       time_start = time(NULL);
-      previous_len =  res[SOL_NN].length;
+      previous_len = res[SOL_NN].length;
       optimize_2opt(&instance, &res[SOL_NN]);
       exec_times[SOL_NN] += time(NULL) - time_start;
 
@@ -193,7 +189,7 @@ int main(int argc, char const *argv[]) {
           fprintf(opt.log, "%d ", res[SOL_NN].tour[i]);
         }
         fprintf(opt.log, "(%f)\n", res[SOL_NN].length);
-        ratio = (1 - res[SOL_NN].length/previous_len) * 100;
+        ratio = (1 - res[SOL_NN].length / previous_len) * 100;
         fprintf(opt.log, COLOR_G "%.2f %% " COLOR_N "optimization\n", ratio);
       }
     }
@@ -210,13 +206,13 @@ int main(int argc, char const *argv[]) {
         }
         fprintf(opt.log, "(%f)\n", res[SOL_RW].length);
       }
-      
+
       // calcul
       time_start = time(NULL);
       previous_len = res[SOL_RW].length;
       optimize_2opt(&instance, &res[SOL_RW]);
       exec_times[SOL_RW] += time(NULL) - time_start;
-      
+
       // Informations (verbose)
       if (opt.state[BAL_V]) {
         fprintf(opt.log, "Optimized solution :");
@@ -224,7 +220,7 @@ int main(int argc, char const *argv[]) {
           fprintf(opt.log, "%d ", res[SOL_RW].tour[i]);
         }
         fprintf(opt.log, "(%f)\n", res[SOL_RW].length);
-        ratio = (1 - res[SOL_RW].length/previous_len) * 100;
+        ratio = (1 - res[SOL_RW].length / previous_len) * 100;
         fprintf(opt.log, COLOR_G "%.2f %% " COLOR_N "optimization\n", ratio);
       }
     }
