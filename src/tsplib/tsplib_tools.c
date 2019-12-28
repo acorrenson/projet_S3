@@ -73,6 +73,17 @@ void tour__add_node(tour_t *t, int node) {
   t->current++;
 }
 
+bool tour__has_node(tour_t *t, int node) {
+  int i = 0;
+  while (i < t->dimension && t->tour[i] != node) {
+    i++;
+  }
+  if (i >= t->dimension)
+    return false;
+  else
+    return true;
+}
+
 double tour__compute_length(instance_t *instance, tour_t *tour, bool optimize) {
   assert(tour->dimension == instance->dimension);
   int i = 0;
@@ -125,4 +136,38 @@ void instance__extract_tour(instance_t *instance, tour_t *tour) {
   }
   strcpy(tour->name, instance->name);
   tour->length = instance->length;
+}
+
+/**
+ * @brief Marque un noeud.
+ *
+ */
+void instance__mark(instance_t *instance, int node) {
+  assert(node < instance->dimension);
+  instance->tabCoord[node][2] = 1;
+}
+
+/**
+ * @brief Test si un noeud est marqué.
+ *
+ */
+bool instance__marked(instance_t *instance, int node) {
+  assert(node < instance->dimension);
+  if (instance->tabCoord[node][2] == 0) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+/**
+ * @brief Cherche le premier noeud non marqué.
+ *
+ */
+int instance__find_non_marked(instance_t *instance) {
+  for (int i = 0; i < instance->dimension; i++) {
+    if (!instance__marked(instance, i))
+      return i;
+  }
+  return NIL;
 }

@@ -15,20 +15,6 @@
 #include <tsplib/tsplib.h>
 
 /**
- * @brief Marque un noeud dans une instance.
- *
- * @param instance L'instance.
- * @param node  Le noeud.
- */
-void mark(instance_t *instance, int node);
-
-/**
- * @brief Test si un noeud est marqué dans un instance
- *
- */
-bool marked(instance_t *, int);
-
-/**
  * @brief Applique la méthode de résolution suivant l'heuristique des plus
  * proches voisins.
  *
@@ -36,5 +22,8 @@ bool marked(instance_t *, int);
  * @param result La tournée solution.
  */
 void nearest_neighbour(instance_t *instance, tour_t *result);
+
+void find_nearest_neighbour(instance_t *instance, int node, int *nearest,
+                            double *dist);
 
 #endif

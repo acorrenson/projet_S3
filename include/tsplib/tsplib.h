@@ -177,4 +177,22 @@ double tour__compute_length(instance_t *instance, tour_t *tour, bool);
  */
 void instance__extract_tour(instance_t *, tour_t *);
 
+/**
+ * @brief Marque un noeud.
+ *
+ */
+void instance__mark(instance_t *instance, int node);
+
+/**
+ * @brief Test si un noeud est marqué.
+ *
+ */
+bool instance__marked(instance_t *instance, int node);
+
+/**
+ * @brief Cherche le premier noeud non marqué.
+ *
+ */
+int instance__find_non_marked(instance_t *instance);
+
 #endif
