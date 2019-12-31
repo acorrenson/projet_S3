@@ -76,7 +76,7 @@ void instance__read_from_file(instance_t *, FILE *);
  * @param zero Précise si la numérotation des noeuds commence à zero ou le cas
  * contraire à 1.
  */
-void tour__write_as_tsp(tour_t *, FILE *, bool zero);
+void tour__write_as_tsp(tour_t *, FILE *);
 
 /**
  * @brief Affiche la matrice des distances d'une instance.

@@ -75,30 +75,72 @@ void method_genetic_run_test() {
     t4.tour[i] = a4[i];
   }
 
-  int *sizes2;
-  int **frags2;
-  int size2 = explode(&t3, &t4, &frags2, &sizes2);
-
   int **edgesA;
   int **edgesB;
   tour__get_edges(&t3, &edgesA);
   tour__get_edges(&t4, &edgesB);
-  for (int i = 0; i < 9; i++) {
-    printf("(%d %d) ", edgesA[i][0], edgesA[i][1]);
-  }
-  printf("\n");
-  for (int i = 0; i < 9; i++) {
-    printf("(%d %d) ", edgesB[i][0], edgesB[i][1]);
-  }
-  printf("\n");
 
+  int cedgesA[9][2] = {{3, 5},  {3, 9},  {1, 9}, {1, 2}, {2, 8},
+                       {8, 10}, {6, 10}, {6, 7}, {4, 7}};
 
-  for (int i = 0; i < size2; i++) {
-    for (int j = 0; j < sizes2[i]; j++) {
-      printf("%d ", frags2[i][j]);
-    }
-    printf("[%d]\n", sizes2[i]);
+  int cedgesB[9][2] = {{1, 2}, {2, 5}, {3, 5},  {3, 9}, {4, 9},
+                       {4, 8}, {6, 8}, {6, 10}, {7, 10}};
+
+  bool check = true;
+  for (int i = 0; i < 9; i++) {
+    check = check &&
+            (cedgesA[i][0] == edgesA[i][0] && cedgesA[i][1] == edgesA[i][1]);
   }
+
+  test_ensure(&test,
+              "edges of [5, 3, 9, 1, 2, 8, 10, 6, 7, 4] are "
+              "(3 5) (3 9) (1 9) (1 2) (2 8) (8 10) (6 10) (6 7) (4 7)",
+              check);
+
+  check = true;
+  for (int i = 0; i < 9; i++) {
+    check = check &&
+            (cedgesB[i][0] == edgesB[i][0] && cedgesB[i][1] == edgesB[i][1]);
+  }
+
+  test_ensure(&test,
+              "edges of [1, 2, 5, 3, 9, 4, 8, 6, 10, 7] are "
+              "(1 2) (2 5) (3 5) (3 9) (4 9) (4 8) (6 8) (6 10) (7 10)",
+              check);
+
+  instance_t inst;
+  tour_t t5;
+  int *sizes2;
+  int **frags2;
+  int size2 = explode(&t3, &t4, &frags2, &sizes2);
+  instance__init(&inst, false);
+  instance__read_from_file(&inst, read_or_fail("./att10.tsp", 0));
+  instance__compute_distances(&inst);
+  int tour[10] = {5, 3, 9, 1, 2, 4, 10, 6, 7, 8};
+  cross_dpx(&inst, &t3, &t4, &t5);
+
+  check = true;
+  for (int i = 1; i <= 10; i++) {
+    check = check && (tour__has_node(&t5, i));
+  }
+
+  test_ensure(&test,
+              "The result of cross_dpx on "
+              "{5, 3, 9, 1, 2, 8, 10, 6, 7, 4} and "
+              "{1, 2, 5, 3, 9,4, 8, 6, 10, 7} is consistent",
+              check);
+
+  check = true;
+  for (int i = 0; i < 9; i++) {
+    check = check && (t5.tour[i] == tour[i]);
+  }
+
+  test_ensure(&test,
+              "The result of cross_dpx on "
+              "{5, 3, 9, 1, 2, 8, 10, 6, 7, 4} and "
+              "{1, 2, 5, 3, 9,4, 8, 6, 10, 7} is "
+              "{5, 3, 9, 1, 2, 4, 10, 6, 7, 8}",
+              check);
 
   end_test(&test);
 }

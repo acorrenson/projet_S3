@@ -115,7 +115,7 @@ int main(int argc, char const *argv[]) {
   tour__compute_length(&instance, &t2, false);
 
   printf("%f %f %f\n", t1.length, t2.length, test.length);
-  tour__write_as_tsp(&test, stdout, false);
+  tour__write_as_tsp(&test, stdout);
 
   // === Affichage de la matrice des distances (verbose) ===
   if (opt.state[BAL_V]) {
@@ -259,7 +259,7 @@ int main(int argc, char const *argv[]) {
     }
     // écriture de la première solution
     if (i < METHODS_NUMBER) {
-      tour__write_as_tsp(&res[i], opt.output_tour, !opt.state[BAL_ZERO]);
+      tour__write_as_tsp(&res[i], opt.output_tour);
     }
   }
 

@@ -194,7 +194,7 @@ void instance__print_matrix(instance_t *instance) {
   }
 }
 
-void tour__write_as_tsp(tour_t *tour, FILE *file, bool zero) {
+void tour__write_as_tsp(tour_t *tour, FILE *file) {
   fprintf(file, "NAME : %s\n", tour->name);
   fprintf(file, "TYPE : TOUR\n");
   fprintf(file, "DIMENSION : %d\n", tour->dimension);
@@ -202,11 +202,7 @@ void tour__write_as_tsp(tour_t *tour, FILE *file, bool zero) {
   fprintf(file, "TOUR_SECTION\n");
 
   for (int i = 0; i < tour->dimension; i++) {
-    if (zero) {
-      fprintf(file, "%d\n", tour->tour[i]);
-    } else {
-      fprintf(file, "%d\n", tour->tour[i] + 1);
-    }
+    fprintf(file, "%d\n", tour->tour[i]);
   }
   fprintf(file, "EOF\n");
 }
