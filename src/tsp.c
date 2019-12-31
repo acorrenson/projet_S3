@@ -29,11 +29,6 @@ const char methods[METHODS_NUMBER][BUFSIZ] = {
 void write_results_as_csv(instance_t *instance, tour_t sols[METHODS_NUMBER],
                           double times[METHODS_NUMBER], cli_opt_t *opt) {
   FILE *file = opt->output_csv;
-  int zero;
-  if (opt->state[BAL_ZERO])
-    zero = 1;
-  else
-    zero = 0;
 
   // Ecriture de la partie INSTANCE
   fprintf(file, "Nom de l'instance ; %s\n", instance->name);
@@ -45,8 +40,8 @@ void write_results_as_csv(instance_t *instance, tour_t sols[METHODS_NUMBER],
   fprintf(file, "Type ; %s\n", instance->type);
   fprintf(file, "Point ; Abs ; Ord\n");
   for (int j = 0; j < instance->dimension; j++) {
-    fprintf(file, "%6d ; %6d; %6d\n", j + zero, instance->tabCoord[j][0],
-            instance->tabCoord[j][1]);
+    fprintf(file, "%6d ; %6d; %6d\n", instance__node_at(instance, j),
+            instance->tabCoord[j][0], instance->tabCoord[j][1]);
   }
 
   // Ecriture de la partie RESULTATS
@@ -56,7 +51,7 @@ void write_results_as_csv(instance_t *instance, tour_t sols[METHODS_NUMBER],
       fprintf(file, "%s ; %.2f ; %.2f ; [", methods[i], sols[i].length,
               times[i]);
       for (int j = 0; j < sols[i].dimension - 1; j++) {
-        fprintf(file, "%d, ", sols[i].tour[j] + zero);
+        fprintf(file, "%d, ", sols[i].tour[j]);
       }
       fprintf(file, "%d]\n", sols[i].tour[sols[i].dimension - 1]);
     }
@@ -64,6 +59,22 @@ void write_results_as_csv(instance_t *instance, tour_t sols[METHODS_NUMBER],
 }
 
 int main(int argc, char const *argv[]) {
+
+  tour_t t1;
+  tour_t t2;
+  t1.tour = malloc(10 * sizeof(int));
+  t2.tour = malloc(10 * sizeof(int));
+  t1.dimension = 10;
+  t2.dimension = 10;
+  t1.current = 0;
+  t2.current = 0;
+  int a1[] = {5, 3, 9, 1, 2, 8, 10, 6, 7, 4};
+  int a2[] = {1, 2, 5, 3, 9, 4, 8, 6, 10, 7};
+
+  for (int i = 0; i < 10; i++) {
+    t1.tour[i] = a1[i];
+    t2.tour[i] = a2[i];
+  }
 
   // ====================================
   // == Initialisation
@@ -94,9 +105,15 @@ int main(int argc, char const *argv[]) {
   // ====================================
   // == Lecture des entrées
   // ====================================
-
+  instance__init(&instance, !opt.state[BAL_ZERO]);
   instance__read_from_file(&instance, opt.input_instance);
   instance__compute_distances(&instance);
+
+  tour_t test;
+  cross_dpx(&instance, &t1, &t2, &test);
+  for (int i = 0; i < 10; i++) {
+    printf("-> %d\n", test.tour[i]);
+  };
 
   // === Affichage de la matrice des distances (verbose) ===
   if (opt.state[BAL_V]) {

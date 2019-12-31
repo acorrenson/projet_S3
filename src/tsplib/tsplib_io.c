@@ -47,9 +47,11 @@ void instance__read_from_file(instance_t *instance, FILE *f) {
   int posx;
   int posy;
   int zero;
-  
-  if (instance->node_zero) zero = 1;
-  else zero = 0;
+
+  if (instance->node_zero)
+    zero = 1;
+  else
+    zero = 0;
 
   // parsing du champs NAME
   fgets(line, sizeof(line), f);
@@ -143,20 +145,21 @@ void instance__read_from_file(instance_t *instance, FILE *f) {
   // sauvegarde des données lues
   strcpy(instance->name, name);
   strcpy(instance->type, "TSP");
-  if (zero) {
+  if (instance->node_zero) {
+    printf("ADD ZERO\n");
     // Si besoin, on ajoute la ville 0 de position (0, 0)
     instance->dimension = dim;
     instance->tabCoord[0][0] = 0;
     instance->tabCoord[0][1] = 0;
     instance->tabCoord[0][2] = 0;
     instance->tabCoord[0][3] = 0;
+    instance->node_zero = true;
   } else {
     // sinon, on la retire...
     instance->dimension = dim - 1;
     // ... on libère la mémoire pour la ville 0
     int **ptr1 = instance->tabCoord;
     free(*ptr1);
-    free(ptr1);
     // .. et on decalle le tableau
     instance->tabCoord += 1;
   }
@@ -167,14 +170,10 @@ void instance__read_from_file(instance_t *instance, FILE *f) {
 void instance__print_matrix(instance_t *instance) {
   int padd = 12; // decalage en espace
   int prec = 3;  // précision d'affichage des floatants
-  int zero;
-  
-  if (instance->node_zero) zero = 0;
-  else zero = 1;
 
   printf("   ");
   for (int i = 0; i < instance->dimension; i++) {
-      printf("%*d", padd, i+zero);
+    printf("%*d", padd, instance__node_at(instance, i));
   }
 
   printf("\n");
@@ -184,7 +183,7 @@ void instance__print_matrix(instance_t *instance) {
 
   printf("\n");
   for (int i = 0; i < instance->dimension; i++) {
-    printf("%d |", i+zero);
+    printf("%d |", instance__node_at(instance, i));
     for (int j = 0; j < instance->dimension; j++) {
       if (j <= i)
         printf("%*c", padd, '.');

@@ -20,27 +20,24 @@ void tour__init(tour_t *tour) {
 }
 
 double instance__dist_euclidian(instance_t *instance, int a, int b) {
-  assert(0 <= a && a < instance->dimension);
-  assert(0 <= b && a < instance->dimension);
-
-  int x1 = instance->tabCoord[a][0];
-  int y1 = instance->tabCoord[a][1];
-  int x2 = instance->tabCoord[b][0];
-  int y2 = instance->tabCoord[b][1];
+  int x1 = instance->tabCoord[instance__index_of(instance, a)][0];
+  int y1 = instance->tabCoord[instance__index_of(instance, a)][1];
+  int x2 = instance->tabCoord[instance__index_of(instance, b)][0];
+  int y2 = instance->tabCoord[instance__index_of(instance, b)][1];
 
   double r = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
   return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
 double instance__dist_matrix(instance_t *instance, int a, int b) {
-  assert(0 <= a && a < instance->dimension);
-  assert(0 <= b && a < instance->dimension);
 
   // on utilise une demie matrice SUPERIEURE
   if (a < b)
-    return instance->matDist[a][b];
+    return instance->matDist[instance__index_of(instance, a)]
+                            [instance__index_of(instance, b)];
   else
-    return instance->matDist[b][a];
+    return instance->matDist[instance__index_of(instance, b)]
+                            [instance__index_of(instance, a)];
 }
 
 void instance__compute_distances(instance_t *instance) {
@@ -51,7 +48,9 @@ void instance__compute_distances(instance_t *instance) {
 
   for (int i = 0; i < instance->dimension; i++) {
     for (int j = i + 1; j < instance->dimension; j++) {
-      instance->matDist[i][j] = instance__dist_euclidian(instance, i, j);
+      instance->matDist[i][j] =
+          instance__dist_euclidian(instance, instance__node_at(instance, i),
+                                   instance__node_at(instance, j));
     }
   }
 }
@@ -143,8 +142,11 @@ void instance__extract_tour(instance_t *instance, tour_t *tour) {
  *
  */
 void instance__mark(instance_t *instance, int node) {
-  assert(node < instance->dimension);
-  instance->tabCoord[node][2] = 1;
+  instance->tabCoord[instance__index_of(instance, node)][2] = 1;
+}
+
+void instance__unmark(instance_t *instance, int node) {
+  instance->tabCoord[instance__index_of(instance, node)][2] = 0;
 }
 
 /**
@@ -152,8 +154,7 @@ void instance__mark(instance_t *instance, int node) {
  *
  */
 bool instance__marked(instance_t *instance, int node) {
-  assert(node < instance->dimension);
-  if (instance->tabCoord[node][2] == 0) {
+  if (instance->tabCoord[instance__index_of(instance, node)][2] == 0) {
     return false;
   } else {
     return true;
@@ -166,8 +167,24 @@ bool instance__marked(instance_t *instance, int node) {
  */
 int instance__find_non_marked(instance_t *instance) {
   for (int i = 0; i < instance->dimension; i++) {
-    if (!instance__marked(instance, i))
-      return i;
+    if (!instance__marked(instance, instance__node_at(instance, i)))
+      return instance__node_at(instance, i);
   }
   return NIL;
+}
+
+int instance__index_of(instance_t *inst, int node) {
+  if (inst->node_zero) {
+    return node;
+  } else {
+    return node - 1;
+  }
+}
+
+int instance__node_at(instance_t *inst, int index) {
+  if (inst->node_zero) {
+    return index;
+  } else {
+    return index + 1;
+  }
 }

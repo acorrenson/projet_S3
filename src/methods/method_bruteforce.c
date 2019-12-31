@@ -41,7 +41,7 @@ void brute_force(instance_t *instance, tour_t *result, bool optimize) {
   instance->tabTour = malloc(dim * sizeof(int));
 
   for (int i = 0; i < dim; i++) {
-    instance->tabTour[i] = i;
+    instance->tabTour[i] = instance__node_at(instance, i);
   }
 
   tour_t best_tour;

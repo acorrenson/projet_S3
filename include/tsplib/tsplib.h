@@ -195,4 +195,7 @@ bool instance__marked(instance_t *instance, int node);
  */
 int instance__find_non_marked(instance_t *instance);
 
+int instance__node_at(instance_t *inst, int index);
+int instance__index_of(instance_t *inst, int index);
+
 #endif
