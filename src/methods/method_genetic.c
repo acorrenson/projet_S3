@@ -136,4 +136,73 @@ void cross_dpx(instance_t *instance, tour_t *t1, tour_t *t2, tour_t *t3) {
   tour__compute_length(instance, t3, true);
 }
 
+bool edge_in(int **edges, int edge[2], int size) {
+  bool in = false;
+  int i = 0;
+  while (!in && i < size) {
+    if ((edges[i][0] == edge[0] && edges[i][1] == edge[1]) ||
+        (edges[i][0] == edge[1] && edges[i][1] == edge[0])) {
+      in = true;
+    }
+    i++;
+  }
+  return in;
+}
+
+int explode(tour_t *t1, tour_t *t2, int ***fragments, int **sizes) {
+  int **edges1;
+  int **edges2;
+  // calcul des arrêtes de t1
+  tour__get_edges(t1, &edges1);
+  // calcul des arrêtes de t2
+  tour__get_edges(t2, &edges2);
+
+  int **shared_edges = malloc((t1->dimension - 1) * sizeof(int *));
+  int n_shared_edges = 0;
+  int edge[2];
+
+  for (int i = 0; i < t1->dimension - 1; i++) {
+    shared_edges[i] = malloc(2 * sizeof(int));
+  }
+
+  // calcul des arrêtes partagées par t1 et t2
+  for (int i = 0; i < t1->dimension - 1; i++) {
+    edge[0] = edges1[i][0];
+    edge[1] = edges1[i][1];
+    if (edge_in(edges2, edge, t1->dimension - 1)) {
+      shared_edges[n_shared_edges][0] = edges1[i][0];
+      shared_edges[n_shared_edges][1] = edges1[i][1];
+      n_shared_edges++;
+    }
+  }
+
+  *fragments = malloc(t1->dimension * sizeof(int *));
+  *sizes = malloc(t1->dimension * sizeof(int));
+
+  for (int i = 0; i < t1->dimension; i++) {
+    (*fragments)[i] = malloc(t1->dimension * sizeof(int));
+    (*sizes)[i] = 0;
+  }
+
+  int ifrag = 0;
+  (*fragments)[ifrag][0] = t1->tour[0];
+  (*sizes)[ifrag] = 1;
+
+  // calcul des fragments communs
+  for (int i = 0; i < t1->dimension - 1; i++) {
+    edge[0] = t1->tour[i];
+    edge[1] = t1->tour[i + 1];
+    if (edge_in(shared_edges, edge, n_shared_edges)) {
+      (*fragments)[ifrag][(*sizes)[ifrag]] = edge[1];
+      (*sizes)[ifrag]++;
+    } else {
+      ifrag++;
+      (*sizes)[ifrag] = 1;
+      (*fragments)[ifrag][0] = t1->tour[i + 1];
+    }
+  }
+
+  return ifrag + 1;
+}
+
 void genetic(instance_t *instance, tour_t *tour, cli_opt_t *opt) {}

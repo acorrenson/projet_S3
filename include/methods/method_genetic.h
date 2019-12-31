@@ -29,6 +29,8 @@ typedef tour_t population[MAX_POP];
  */
 void cross_dpx(instance_t *, tour_t *, tour_t *, tour_t *);
 
+int explode(tour_t *t1, tour_t *t2, int ***fragments, int **sizes);
+
 /**
  * @brief Résout un problème TSP en appliquant une
  *

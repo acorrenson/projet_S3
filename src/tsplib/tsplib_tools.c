@@ -63,6 +63,8 @@ void instance__reset(instance_t *instance) {
 
 void tour__set_dimension(tour_t *t, int dim) {
   t->dimension = dim;
+  t->current = 0;
+  free(t->tour);
   t->tour = malloc(dim * sizeof(int));
 }
 
@@ -120,13 +122,6 @@ double instance__compute_length(instance_t *instance, bool optimize) {
   return instance->length;
 }
 
-/**
- * @brief Extraire la tournée courrante d'une instance dans une
- * structure tour.
- *
- * @param instance
- * @param tour
- */
 void instance__extract_tour(instance_t *instance, tour_t *tour) {
   tour__init(tour);
   tour__set_dimension(tour, instance->dimension);
@@ -137,10 +132,6 @@ void instance__extract_tour(instance_t *instance, tour_t *tour) {
   tour->length = instance->length;
 }
 
-/**
- * @brief Marque un noeud.
- *
- */
 void instance__mark(instance_t *instance, int node) {
   instance->tabCoord[instance__index_of(instance, node)][2] = 1;
 }
@@ -149,10 +140,6 @@ void instance__unmark(instance_t *instance, int node) {
   instance->tabCoord[instance__index_of(instance, node)][2] = 0;
 }
 
-/**
- * @brief Test si un noeud est marqué.
- *
- */
 bool instance__marked(instance_t *instance, int node) {
   if (instance->tabCoord[instance__index_of(instance, node)][2] == 0) {
     return false;
@@ -161,10 +148,6 @@ bool instance__marked(instance_t *instance, int node) {
   }
 }
 
-/**
- * @brief Cherche le premier noeud non marqué.
- *
- */
 int instance__find_non_marked(instance_t *instance) {
   for (int i = 0; i < instance->dimension; i++) {
     if (!instance__marked(instance, instance__node_at(instance, i)))
@@ -186,5 +169,19 @@ int instance__node_at(instance_t *inst, int index) {
     return index;
   } else {
     return index + 1;
+  }
+}
+
+void tour__get_edges(tour_t *t, int ***edges) {
+  *edges = malloc((t->dimension - 1) * sizeof(int *));
+  for (int i = 0; i < t->dimension - 1; i++) {
+    (*edges)[i] = malloc(2 * sizeof(int));
+    if (t->tour[i] < t->tour[i + 1]) {
+      (*edges)[i][0] = t->tour[i];
+      (*edges)[i][1] = t->tour[i + 1];
+    } else {
+      (*edges)[i][0] = t->tour[i + 1];
+      (*edges)[i][1] = t->tour[i];
+    }
   }
 }

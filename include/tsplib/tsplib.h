@@ -178,10 +178,16 @@ double tour__compute_length(instance_t *instance, tour_t *tour, bool);
 void instance__extract_tour(instance_t *, tour_t *);
 
 /**
- * @brief Marque un noeud.
+ * @brief Marque un neoud.
  *
  */
 void instance__mark(instance_t *instance, int node);
+
+/**
+ * @brief Retirer la marque d'un noeud.
+ *
+ */
+void instance__unmark(instance_t *instance, int node);
 
 /**
  * @brief Test si un noeud est marqué.
@@ -195,7 +201,31 @@ bool instance__marked(instance_t *instance, int node);
  */
 int instance__find_non_marked(instance_t *instance);
 
+/**
+ * @brief Calcul le noeud d'indice "index" dans une instance.
+ *
+ * @param inst  L'instance.
+ * @param index L'indice.
+ * @return int  Le noeud d'indice "index".
+ */
 int instance__node_at(instance_t *inst, int index);
-int instance__index_of(instance_t *inst, int index);
+
+/**
+ * @brief Calcul l'indice d'un noeud dans une instance.
+ *
+ * @param inst  L'instance.
+ * @param node  Le noeud.
+ * @return int  L'indice du noeud.
+ */
+int instance__index_of(instance_t *inst, int node);
+
+/**
+ * @brief Extraire la list des arrêtes d'une tournée (les couples arrêtes sont
+ * donnés dans l'ordre croissant).
+ *
+ * @param t     La tournée.
+ * @param edges Les arrêtes.
+ */
+void tour__get_edges(tour_t *t, int ***edges);
 
 #endif
