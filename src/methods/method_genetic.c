@@ -34,10 +34,9 @@ int nearest_fragment(instance_t *inst, int node, int **fragments, int size,
     rev = true;
   }
 
-  f = find_fragment(marks, size);
-  marks[f] = 1;
   for (int i = 0; i < size; i++) {
     if (marks[i] != 1) {
+      printf("Testing %d\n", i);
       d1 = instance__dist_euclidian(inst, node, fragments[f][0]);
       d2 = instance__dist_euclidian(inst, node, fragments[f][sizes[f] - 1]);
       if (d1 < d2) {
@@ -49,7 +48,9 @@ int nearest_fragment(instance_t *inst, int node, int **fragments, int size,
       }
       if (d < min_dist) {
         min_dist = d;
+        printf("unmark %d\n", min_f);
         marks[min_f] = 0;
+        printf("mark %d\n", f);
         marks[f] = 1;
         min_f = f;
         *reverse = rev;
@@ -108,7 +109,7 @@ void cross_dpx(instance_t *instance, tour_t *t1, tour_t *t2, tour_t *t3) {
   t3->tour = malloc(dim * sizeof(int));
 
   int head = fragments[0][sizes[0] - 1];
-  int ihead = sizes[0];
+  int ihead = sizes[0] - 1;
   bool reverse;
   marks[0] = 1;
 
@@ -131,7 +132,7 @@ void cross_dpx(instance_t *instance, tour_t *t1, tour_t *t2, tour_t *t3) {
   }
   printf("\n");
   while (f != NIL) {
-    if (!reverse) {
+    if (reverse) {
       for (int i = sizes[f] - 1; i >= 0; i--) {
         tour__add_node(t3, fragments[f][i]);
       }
@@ -140,11 +141,11 @@ void cross_dpx(instance_t *instance, tour_t *t1, tour_t *t2, tour_t *t3) {
         tour__add_node(t3, fragments[f][i]);
       }
     }
-    ihead += sizes[f] - 1;
+    ihead += sizes[f];
     head = t3->tour[ihead];
     f = nearest_fragment(instance, head, fragments, ifrag, sizes, marks,
                          &reverse);
-    printf("Nearest of %d (%d) : \n", head, ihead);
+    printf("Nearest of %d (%d) [8 : %d]: ", head, reverse, marks[2]);
     for (int i = 0; i < sizes[f]; i++) {
       printf("%d ", fragments[f][i]);
     }
