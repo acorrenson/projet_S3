@@ -23,6 +23,7 @@ int nearest_fragment(instance_t *inst, int node, int **fragments, int size,
 
   double min_dist, d1, d2, d;
   bool rev;
+
   d1 = instance__dist_euclidian(inst, node, fragments[f][0]);
   d2 = instance__dist_euclidian(inst, node, fragments[f][sizes[f] - 1]);
 
@@ -36,9 +37,8 @@ int nearest_fragment(instance_t *inst, int node, int **fragments, int size,
 
   for (int i = 0; i < size; i++) {
     if (marks[i] != 1) {
-      printf("Testing %d\n", i);
-      d1 = instance__dist_euclidian(inst, node, fragments[f][0]);
-      d2 = instance__dist_euclidian(inst, node, fragments[f][sizes[f] - 1]);
+      d1 = instance__dist_euclidian(inst, node, fragments[i][0]);
+      d2 = instance__dist_euclidian(inst, node, fragments[i][sizes[i] - 1]);
       if (d1 < d2) {
         d = d1;
         rev = false;
@@ -48,11 +48,9 @@ int nearest_fragment(instance_t *inst, int node, int **fragments, int size,
       }
       if (d < min_dist) {
         min_dist = d;
-        printf("unmark %d\n", min_f);
         marks[min_f] = 0;
-        printf("mark %d\n", f);
-        marks[f] = 1;
-        min_f = f;
+        marks[i] = 1;
+        min_f = i;
         *reverse = rev;
       }
     }
@@ -117,20 +115,9 @@ void cross_dpx(instance_t *instance, tour_t *t1, tour_t *t2, tour_t *t3) {
     tour__add_node(t3, fragments[0][i]);
   }
 
-  for (int i = 0; i < ifrag; i++) {
-    for (int j = 0; j < sizes[i]; j++) {
-      printf("%d ", fragments[i][j]);
-    }
-    printf("\n");
-  }
-
   int f = nearest_fragment(instance, head, fragments, ifrag, sizes, marks,
                            &reverse);
-  printf("Nearest of %d : ", head);
-  for (int i = 0; i < sizes[f]; i++) {
-    printf("%d ", fragments[f][i]);
-  }
-  printf("\n");
+
   while (f != NIL) {
     if (reverse) {
       for (int i = sizes[f] - 1; i >= 0; i--) {
@@ -145,12 +132,8 @@ void cross_dpx(instance_t *instance, tour_t *t1, tour_t *t2, tour_t *t3) {
     head = t3->tour[ihead];
     f = nearest_fragment(instance, head, fragments, ifrag, sizes, marks,
                          &reverse);
-    printf("Nearest of %d (%d) [8 : %d]: ", head, reverse, marks[2]);
-    for (int i = 0; i < sizes[f]; i++) {
-      printf("%d ", fragments[f][i]);
-    }
-    printf("\n");
   }
+  tour__compute_length(instance, t3, true);
 }
 
 void genetic(instance_t *instance, tour_t *tour, cli_opt_t *opt) {}

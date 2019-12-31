@@ -111,9 +111,11 @@ int main(int argc, char const *argv[]) {
 
   tour_t test;
   cross_dpx(&instance, &t1, &t2, &test);
-  for (int i = 0; i < 10; i++) {
-    printf("-> %d\n", test.tour[i]);
-  };
+  tour__compute_length(&instance, &t1, false);
+  tour__compute_length(&instance, &t2, false);
+
+  printf("%f %f %f\n", t1.length, t2.length, test.length);
+  tour__write_as_tsp(&test, stdout, false);
 
   // === Affichage de la matrice des distances (verbose) ===
   if (opt.state[BAL_V]) {
