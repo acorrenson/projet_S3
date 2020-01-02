@@ -68,7 +68,6 @@ void tour__set_dimension(tour_t *t, int dim) {
 }
 
 void tour__add_node(tour_t *t, int node) {
-  assert(0 <= node < t->dimension && t->current < t->dimension);
   t->tour[t->current] = node;
   t->current++;
 }
@@ -172,14 +171,14 @@ int instance__node_at(instance_t *inst, int index) {
 }
 
 void tour__get_edges(tour_t *t, int ***edges) {
-  *edges = malloc((t->dimension - 1) * sizeof(int *));
-  for (int i = 0; i < t->dimension - 1; i++) {
+  *edges = malloc(t->dimension * sizeof(int *));
+  for (int i = 0; i < t->dimension; i++) {
     (*edges)[i] = malloc(2 * sizeof(int));
-    if (t->tour[i] < t->tour[i + 1]) {
+    if (t->tour[i] < t->tour[(i + 1) % t->dimension]) {
       (*edges)[i][0] = t->tour[i];
-      (*edges)[i][1] = t->tour[i + 1];
+      (*edges)[i][1] = t->tour[(i + 1) % t->dimension];
     } else {
-      (*edges)[i][0] = t->tour[i + 1];
+      (*edges)[i][0] = t->tour[(i + 1) % t->dimension];
       (*edges)[i][1] = t->tour[i];
     }
   }

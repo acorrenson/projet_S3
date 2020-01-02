@@ -1,5 +1,6 @@
 #include <methods/method_genetic.h>
 #include <methods/method_nearest_neighbour.h>
+#include <methods/method_random_walk.h>
 
 int find_fragment(int *marks, int size) {
   int i = 0;
@@ -159,19 +160,19 @@ int explode(tour_t *t1, tour_t *t2, int ***fragments, int **sizes) {
   // calcul des arrêtes de t2
   tour__get_edges(t2, &edges2);
 
-  int **shared_edges = malloc((t1->dimension - 1) * sizeof(int *));
+  int **shared_edges = malloc((t1->dimension) * sizeof(int *));
   int n_shared_edges = 0;
   int edge[2];
 
-  for (int i = 0; i < t1->dimension - 1; i++) {
+  for (int i = 0; i < t1->dimension; i++) {
     shared_edges[i] = malloc(2 * sizeof(int));
   }
 
   // calcul des arrêtes partagées par t1 et t2
-  for (int i = 0; i < t1->dimension - 1; i++) {
+  for (int i = 0; i < t1->dimension; i++) {
     edge[0] = edges1[i][0];
     edge[1] = edges1[i][1];
-    if (edge_in(edges2, edge, t1->dimension - 1)) {
+    if (edge_in(edges2, edge, t1->dimension)) {
       shared_edges[n_shared_edges][0] = edges1[i][0];
       shared_edges[n_shared_edges][1] = edges1[i][1];
       n_shared_edges++;
@@ -207,9 +208,20 @@ int explode(tour_t *t1, tour_t *t2, int ***fragments, int **sizes) {
   return ifrag + 1;
 }
 
+int get_best(tour_t *population, int size) { return 0; }
+
+void peek_2_randomly(tour_t *population, int size, int *t1, int *t2) {}
+
 void genetic(instance_t *instance, tour_t *tour, cli_opt_t *opt) {
   tour_t *population;
   int pop_size = 20;
   population = malloc(pop_size * sizeof(tour_t));
-  // for (int i = 0; i < 2)
+
+  for (int i = 0; i < pop_size; i++) {
+    tour__init(&population[i]);
+    random_walk(instance, &population[i]);
+    instance__reset(instance);
+  }
+
+  // while
 }
