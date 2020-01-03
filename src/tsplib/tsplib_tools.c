@@ -19,6 +19,15 @@ void tour__init(tour_t *tour) {
   tour->current = 0;
 }
 
+void tour__copy(tour_t *t1, const tour_t *t2) {
+  strcpy(t1->name, t2->name);
+  t1->length = t2->length;
+  t1->dimension = t2->dimension;
+  for (int i = 0; i < t1->dimension; i++) {
+    t1->tour[i] = t2->tour[i];
+  }
+}
+
 double instance__dist_euclidian(instance_t *instance, int a, int b) {
   int x1 = instance->tabCoord[instance__index_of(instance, a)][0];
   int y1 = instance->tabCoord[instance__index_of(instance, a)][1];

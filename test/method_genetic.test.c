@@ -54,7 +54,7 @@ void method_genetic_run_test() {
   bool check3 = true;
   int **frags;
   int *sizes;
-  int size = explode(&t1, &t2, &frags, &sizes);
+  int size = get_shared_fragments(&t1, &t2, &frags, &sizes);
 
   test_ensure(&test, "There is 1 shared fragment bt [2, 1, 3] and [1, 2, 3]",
               size == 1);
@@ -75,7 +75,7 @@ void method_genetic_run_test() {
 
   test_ensure(&test,
               "there is only 1 shared fragment bt [1, 2, 3] and [1, 2, 3]",
-              explode(&t1, &t1, &frags, &sizes) == 1);
+              get_shared_fragments(&t1, &t1, &frags, &sizes) == 1);
 
   check3 = true;
   for (int i = 0; i < 3; i++) {
@@ -140,7 +140,7 @@ void method_genetic_run_test() {
   tour_t t5;
   int *sizes2;
   int **frags2;
-  int size2 = explode(&t3, &t4, &frags2, &sizes2);
+  int size2 = get_shared_fragments(&t3, &t4, &frags2, &sizes2);
   instance__init(&inst, false);
   instance__read_from_file(&inst, read_or_fail("./att10.tsp", 0));
   instance__compute_distances(&inst);
@@ -169,6 +169,25 @@ void method_genetic_run_test() {
               "{1, 2, 5, 3, 9,4, 8, 6, 10, 7} is "
               "{5, 3, 9, 1, 2, 4, 10, 6, 7, 8}",
               check);
+
+  tour_t res;
+  cli_opt_t opt;
+
+  opt.log = stderr;
+  opt.state[BAL_V] = true;
+  genetic(&inst, &res, &opt);
+
+  test_ensure(&test,
+              "The result of the genetic method and the instance have the "
+              "same dimension",
+              res.dimension == inst.dimension);
+
+  check = true;
+  for (int i = 0; i < inst.dimension; i++) {
+    check = check && (tour__has_node(&res, instance__node_at(&inst, i)));
+  }
+
+  test_ensure(&test, "The result of the genetic method is consistent", check);
 
   end_test(&test);
 }

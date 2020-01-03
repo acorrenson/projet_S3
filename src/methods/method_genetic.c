@@ -1,6 +1,4 @@
 #include <methods/method_genetic.h>
-#include <methods/method_nearest_neighbour.h>
-#include <methods/method_random_walk.h>
 
 int find_fragment(int *marks, int size) {
   int i = 0;
@@ -69,43 +67,12 @@ void cross_dpx(instance_t *instance, tour_t *t1, tour_t *t2, tour_t *t3) {
   int *marks;      // marques sur les fragments
   int n_frag = 0;  // nombre de fragments
 
-  n_frag = explode(t1, t2, &fragments, &sizes);
+  n_frag = get_shared_fragments(t1, t2, &fragments, &sizes);
   marks = malloc(dim * sizeof(int));
-
-  // fragments = malloc(dim * sizeof(int *));
-  // sizes = malloc((dim + 2) * sizeof(int));
-
-  // assert(sizes != NULL);
 
   for (int i = 0; i < dim; i++) {
     marks[i] = 0;
   }
-
-  // int i1 = 0;   // indice dans le tour 1
-  // int i2 = 0;   // indice dans le tour 2
-  // int size = 0; // taille du fragment courrant
-
-  // while (i1 < dim) {
-  //   assert(tour__has_node(t2, t1->tour[i1]));
-  //   assert(dim >= 2);
-  //   size = 0;
-  //   // trouver la première occurence de t1->tour[i1] dans t2
-  //   while (t1->tour[i1] != t2->tour[i2 % dim]) {
-  //     i2++;
-  //   }
-  //   // trouver le plus long fragment commun partant de t1->tour[i1]
-  //   while (t1->tour[i1] == t2->tour[i2 % dim] && i1 < dim) {
-  //     size++;
-  //     i1++;
-  //     i2++;
-  //   }
-  //   fragments[ifrag] = malloc(size * sizeof(int));
-  //   sizes[ifrag] = size;
-  //   for (int i = 0; i < size; i++) {
-  //     fragments[ifrag][i] = t1->tour[(i1 - size + i) % dim];
-  //   }
-  //   ifrag++;
-  // }
 
   tour__set_dimension(t3, dim);
 
@@ -121,21 +88,28 @@ void cross_dpx(instance_t *instance, tour_t *t1, tour_t *t2, tour_t *t3) {
   int f = nearest_fragment(instance, head, fragments, n_frag, sizes, marks,
                            &reverse);
 
+  // jonction des fragments communs
   while (f != NIL) {
     if (reverse) {
+      // il faut renverser le prochain fragment à joindre
       for (int i = sizes[f] - 1; i >= 0; i--) {
         tour__add_node(t3, fragments[f][i]);
       }
     } else {
+      // on joint le prochain fragment sans le renverser
       for (int i = 0; i < sizes[f]; i++) {
         tour__add_node(t3, fragments[f][i]);
       }
     }
+    // on met à jour la liste des fragments
     ihead += sizes[f];
     head = t3->tour[ihead];
+    // on cherche le prochain fragment à joindre.
     f = nearest_fragment(instance, head, fragments, n_frag, sizes, marks,
                          &reverse);
   }
+
+  // calcul de la longueur de tournée
   tour__compute_length(instance, t3, true);
 }
 
@@ -152,7 +126,8 @@ bool edge_in(int **edges, int edge[2], int size) {
   return in;
 }
 
-int explode(tour_t *t1, tour_t *t2, int ***fragments, int **sizes) {
+int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
+                         int **sizes) {
   int **edges1;
   int **edges2;
   // calcul des arrêtes de t1
@@ -208,20 +183,71 @@ int explode(tour_t *t1, tour_t *t2, int ***fragments, int **sizes) {
   return ifrag + 1;
 }
 
-int get_best(tour_t *population, int size) { return 0; }
+int get_best(tour_t *population, int size) {
+  double min_len = population[0].length;
+  int imin = 0;
+  for (int i = 1; i < size; i++) {
+    if (population[i].length < imin) {
+      min_len = population[i].length;
+      imin = i;
+    }
+  }
+  return imin;
+}
 
-void peek_2_randomly(tour_t *population, int size, int *t1, int *t2) {}
+void peek_2_randomly(int size, int *t1, int *t2) {
+  *t1 = random() % size;
+  *t2 = random() % size;
+  while (*t1 == *t2) {
+    *t2 = random() % size;
+  }
+}
 
 void genetic(instance_t *instance, tour_t *tour, cli_opt_t *opt) {
   tour_t *population;
+  tour_t *mating_pool;
   int pop_size = 20;
+  int max_generation = 10;
   population = malloc(pop_size * sizeof(tour_t));
+  mating_pool = malloc(pop_size * sizeof(tour_t));
 
+  srand(time(NULL));
+  tour__init(tour);
+  tour__set_dimension(tour, instance->dimension);
+
+  // génération initiale
   for (int i = 0; i < pop_size; i++) {
-    tour__init(&population[i]);
-    random_walk(instance, &population[i]);
+    tour__init(population + i);
+    random_walk(instance, population + i);
+    // informations (verbose)
+    if (opt->state[BAL_V]) {
+      fprintf(opt->log,
+              COLOR_N "generated tour " COLOR_Y "%3d " COLOR_N "(len:" COLOR_G
+                      "% .2f" COLOR_N ") ",
+              i, population[i].length);
+      tour__pprint(population + i, opt->log);
+    }
     instance__reset(instance);
   }
 
-  // while
+  int i1, i2;
+  for (int generation = 0; generation < max_generation; generation++) {
+    for (int i = 0; i < pop_size; i++) {
+      peek_2_randomly(pop_size, &i1, &i2);
+      cross_dpx(instance, &population[i1], &population[i2], &mating_pool[i]);
+    }
+    for (int i = 0; i < pop_size; i++) {
+      tour__copy(population + i, mating_pool + i);
+    }
+
+    tour__copy(tour, &population[get_best(population, pop_size)]);
+
+    if (opt->state[BAL_V]) {
+      fprintf(opt->log, "generation  : %d\n", generation);
+      fprintf(opt->log, "best tour   : " COLOR_G "%.2f\n" COLOR_N,
+              population[0].length);
+    }
+  }
+  free(mating_pool);
+  free(population);
 }

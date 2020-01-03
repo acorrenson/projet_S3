@@ -13,6 +13,8 @@
 #define METHODE_GENETIC_H
 
 #include <cli.h>
+#include <methods/method_nearest_neighbour.h>
+#include <methods/method_random_walk.h>
 #include <tsplib/tsplib.h>
 
 #define MAX_POP 1000
@@ -29,10 +31,31 @@ typedef tour_t population[MAX_POP];
  */
 void cross_dpx(instance_t *, tour_t *, tour_t *, tour_t *);
 
-int explode(tour_t *t1, tour_t *t2, int ***fragments, int **sizes);
+/**
+ * @brief Calcul des fragments de chemins partagés entre deux tournées.
+ *
+ * @param t1  La première tournée.
+ * @param t2  La deuxième tournée.
+ * @param fragments Les fragments partagés.
+ * @param sizes     Les tailles des fragments.
+ * @return int      Le nombre de fragments.
+ */
+int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments, int **sizes);
 
 /**
- * @brief Résout un problème TSP en appliquant une
+ * @brief Trouve la première occurence de "false" dans un tableau booléen.
+ *
+ * @param marks   Le tableau.
+ * @param size    La taille du tableau.
+ * @return int    L'indice de la première occurence de false (ou NIL si aucune).
+ */
+int find_fragment(int *marks, int size);
+
+int nearest_fragment(instance_t *inst, int node, int **fragments, int size,
+                     int *sizes, int *marks, bool *reverse);
+
+/**
+ * @brief Résout un problème TSP en appliquant un algorithme génétique.
  *
  */
 void genetic(instance_t *, tour_t *, cli_opt_t *);

@@ -107,6 +107,10 @@ void instance__reset(instance_t *);
  */
 void tour__init(tour_t *);
 
+void tour__copy(tour_t *, const tour_t *);
+
+void tour__pprint(tour_t *, FILE *out);
+
 /**
  * @brief Ajoute un noeud au tour.
  *

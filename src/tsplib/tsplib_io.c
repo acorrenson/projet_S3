@@ -206,3 +206,11 @@ void tour__write_as_tsp(tour_t *tour, FILE *file) {
   }
   fprintf(file, "EOF\n");
 }
+
+void tour__pprint(tour_t *t, FILE *out) {
+  fprintf(out, "[");
+  for (int i = 0; i < t->dimension - 1; i++) {
+    fprintf(out, "%d, ", t->tour[i]);
+  }
+  fprintf(out, "%d]\n", t->tour[t->dimension - 1]);
+}
