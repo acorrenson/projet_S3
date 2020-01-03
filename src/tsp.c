@@ -7,20 +7,27 @@
 #include <time.h>
 #include <tsplib/tsplib.h>
 
-const int METHODS_NUMBER = 5;
-const int SOL_BF = 0;  // solution pour le brute_force
-const int SOL_BFM = 1; // solution pour le brute_force (opti)
-const int SOL_NN = 2;  // solution pour nearest neighbour
-const int SOL_RW = 3;  // solution pour random walk
-const int SOL_GA = 4;  // solution pour algo génétiques
+const int METHODS_NUMBER = 7;
+const int SOL_BF = 0;   // solution pour le brute_force
+const int SOL_BFM = 1;  // solution pour le brute_force (opti)
+const int SOL_NN = 2;   // solution pour nearest neighbour
+const int SOL_RW = 3;   // solution pour random walk
+const int SOL_GA = 4;   // solution pour algo génétiques
+const int SOL_RW_O = 5; // solution pour random walk
+const int SOL_NN_O = 6; // solution pour random walk
 
 /**
  * @brief Nom des méthodes de résolution.
  *
  */
 const char methods[METHODS_NUMBER][BUFSIZ] = {
-    "bruteforce", "bruteforce (optimisation matricielle)", "nearest-neighbour",
-    "randomwalk", "genetic-algorithm"};
+    "bruteforce",
+    "bruteforce (optimisation matricielle)",
+    "nearest-neighbour",
+    "randomwalk",
+    "genetic-algorithm",
+    "randomwalk (2opt)",
+    "nearest-neighbour (2opt)"};
 
 /**
  * @brief Ecriture des résultats complets au format CSV.
@@ -91,7 +98,7 @@ int main(int argc, char const *argv[]) {
   instance_t instance;
 
   // future(s) solution(s)
-  tour_t res[6];
+  tour_t res[METHODS_NUMBER];
 
   // mesure des temps
   double exec_times[6];
@@ -199,17 +206,19 @@ int main(int argc, char const *argv[]) {
       // calcul
       time_start = time(NULL);
       previous_len = res[SOL_NN].length;
-      optimize_2opt(&instance, &res[SOL_NN]);
-      exec_times[SOL_NN] += time(NULL) - time_start;
+      tour__set_dimension(&res[SOL_NN_O], res[SOL_NN].dimension);
+      tour__copy(&res[SOL_NN_O], &res[SOL_NN]);
+      optimize_2opt(&instance, &res[SOL_NN_O]);
+      exec_times[SOL_NN_O] = exec_times[SOL_NN] + time(NULL) - time_start;
 
       // Informations (verbose)
       if (opt.state[BAL_V]) {
         fprintf(opt.log, "Optimized solution :");
         for (int i = 0; i < res[SOL_NN].dimension; i++) {
-          fprintf(opt.log, "%d ", res[SOL_NN].tour[i]);
+          fprintf(opt.log, "%d ", res[SOL_NN_O].tour[i]);
         }
-        fprintf(opt.log, "(%f)\n", res[SOL_NN].length);
-        ratio = (1 - res[SOL_NN].length / previous_len) * 100;
+        fprintf(opt.log, "(%f)\n", res[SOL_NN_O].length);
+        ratio = (1 - res[SOL_NN_O].length / previous_len) * 100;
         fprintf(opt.log, COLOR_G "%.2f %% " COLOR_N "optimization\n", ratio);
       }
     }
@@ -230,17 +239,19 @@ int main(int argc, char const *argv[]) {
       // calcul
       time_start = time(NULL);
       previous_len = res[SOL_RW].length;
-      optimize_2opt(&instance, &res[SOL_RW]);
-      exec_times[SOL_RW] += time(NULL) - time_start;
+      tour__set_dimension(&res[SOL_RW_O], res[SOL_RW].dimension);
+      tour__copy(&res[SOL_RW_O], &res[SOL_RW]);
+      optimize_2opt(&instance, &res[SOL_RW_O]);
+      exec_times[SOL_RW_O] = exec_times[SOL_RW] + time(NULL) - time_start;
 
       // Informations (verbose)
       if (opt.state[BAL_V]) {
         fprintf(opt.log, "Optimized solution :");
-        for (int i = 0; i < res[SOL_RW].dimension; i++) {
-          fprintf(opt.log, "%d ", res[SOL_RW].tour[i]);
+        for (int i = 0; i < res[SOL_RW_O].dimension; i++) {
+          fprintf(opt.log, "%d ", res[SOL_RW_O].tour[i]);
         }
-        fprintf(opt.log, "(%f)\n", res[SOL_RW].length);
-        ratio = (1 - res[SOL_RW].length / previous_len) * 100;
+        fprintf(opt.log, "(%f)\n", res[SOL_RW_O].length);
+        ratio = (1 - res[SOL_RW_O].length / previous_len) * 100;
         fprintf(opt.log, COLOR_G "%.2f %% " COLOR_N "optimization\n", ratio);
       }
     }
