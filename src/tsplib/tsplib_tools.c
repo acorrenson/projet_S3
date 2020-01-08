@@ -94,6 +94,7 @@ bool tour__has_node(tour_t *t, int node) {
 
 double tour__compute_length(instance_t *instance, tour_t *tour, bool optimize) {
   assert(tour->dimension == instance->dimension);
+  // printf("%d %d\n", tour->dimension, instance->dimension);
   int i = 0;
   tour->length = 0.0;
 

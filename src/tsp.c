@@ -66,23 +66,6 @@ void write_results_as_csv(instance_t *instance, tour_t sols[METHODS_NUMBER],
 }
 
 int main(int argc, char const *argv[]) {
-
-  tour_t t1;
-  tour_t t2;
-  t1.tour = malloc(10 * sizeof(int));
-  t2.tour = malloc(10 * sizeof(int));
-  t1.dimension = 10;
-  t2.dimension = 10;
-  t1.current = 0;
-  t2.current = 0;
-  int a1[] = {5, 3, 9, 1, 2, 8, 10, 6, 7, 4};
-  int a2[] = {1, 2, 5, 3, 9, 4, 8, 6, 10, 7};
-
-  for (int i = 0; i < 10; i++) {
-    t1.tour[i] = a1[i];
-    t2.tour[i] = a2[i];
-  }
-
   // ====================================
   // == Initialisation
   // ====================================
@@ -101,7 +84,7 @@ int main(int argc, char const *argv[]) {
   tour_t res[METHODS_NUMBER];
 
   // mesure des temps
-  double exec_times[6];
+  double exec_times[METHODS_NUMBER];
   double time_start;
 
   // initialisation des futures tournées solutions
@@ -112,17 +95,10 @@ int main(int argc, char const *argv[]) {
   // ====================================
   // == Lecture des entrées
   // ====================================
+
   instance__init(&instance, !opt.state[BAL_ZERO]);
   instance__read_from_file(&instance, opt.input_instance);
   instance__compute_distances(&instance);
-
-  tour_t test;
-  cross_dpx(&instance, &t1, &t2, &test);
-  tour__compute_length(&instance, &t1, false);
-  tour__compute_length(&instance, &t2, false);
-
-  printf("%f %f %f\n", t1.length, t2.length, test.length);
-  tour__write_as_tsp(&test, stdout);
 
   // === Affichage de la matrice des distances (verbose) ===
   if (opt.state[BAL_V]) {
