@@ -203,11 +203,31 @@ void peek_2_randomly(int size, int *t1, int *t2) {
   }
 }
 
+int get_worst(tour_t *population, int size) {
+  int worst_len = population[0].length;
+  int i_worst = 0;
+  for (int i = 1; i < size; i++) {
+    if (population[i].length < worst_len) {
+      i_worst = i;
+      worst_len = population[i].length;
+    }
+  }
+  return i_worst;
+}
+
+double average_length(tour_t *population, int size) {
+  double average = 0.0;
+  for (int i = 0; i < size; i++) {
+    average = average + population[i].length;
+  }
+  return average / ((double)size);
+}
+
 void genetic(instance_t *instance, tour_t *tour, cli_opt_t *opt) {
   tour_t *population;
   tour_t *mating_pool;
-  int pop_size = 20;
-  int max_generation = 10;
+  int pop_size = opt->population_size;
+  int max_generation = opt->generations;
   population = malloc(pop_size * sizeof(tour_t));
   mating_pool = malloc(pop_size * sizeof(tour_t));
 

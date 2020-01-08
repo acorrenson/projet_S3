@@ -17,7 +17,7 @@
 #include <utils.h>
 
 //! il y a 13 balises
-#define BAL_COUNT 13
+#define BAL_COUNT 12
 
 // liste des codes pour les balises
 //! -f
@@ -44,8 +44,6 @@
 #define BAL_H 10
 // -nz no zéro
 #define BAL_ZERO 11
-//! -gpy
-#define BAL_GPY 12
 
 typedef struct {
   // == Entrées - Sorties ==
@@ -71,7 +69,7 @@ typedef struct {
   // == Informations générales ==
 
   //! Etat des options (présentes ou non)
-  bool state[13];
+  bool state[BAL_COUNT];
 } cli_opt_t;
 
 /**

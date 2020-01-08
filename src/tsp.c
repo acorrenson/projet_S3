@@ -233,6 +233,17 @@ int main(int argc, char const *argv[]) {
     }
   }
 
+  if (opt.state[BAL_GA]) {
+    if (opt.state[BAL_V]) {
+      fprintf(opt.log,
+              "Method " COLOR_Y "Genetic Algorithm" COLOR_N " running...\n");
+    }
+    // calcul
+    time_start = time(NULL);
+    genetic(&instance, &res[SOL_GA], &opt);
+    exec_times[SOL_GA] = time(NULL) - time_start;
+  }
+
   // ====================================
   // == Sorties
   // ====================================

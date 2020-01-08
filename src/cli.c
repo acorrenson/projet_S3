@@ -143,11 +143,6 @@ void cli(int argc, char const *argv[], cli_opt_t *opt) {
       opt->state[BAL_H] = true;
     }
 
-    // Balise -gpy
-    else if (strcmp("-gpy", argv[i]) == 0) {
-      opt->state[BAL_GPY] = true;
-    }
-
     // Balise inconnue
     else {
       fprintf(stderr, COLOR_R "[cli - error] invalid option %s\n" COLOR_N,

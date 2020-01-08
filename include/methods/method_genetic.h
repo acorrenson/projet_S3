@@ -17,14 +17,6 @@
 #include <methods/method_random_walk.h>
 #include <tsplib/tsplib.h>
 
-#define MAX_POP 1000
-
-/**
- * @brief Type représentant une population solution.
- *
- */
-typedef tour_t population[MAX_POP];
-
 /**
  * @brief Effectuer un croisement DPX entre deux individus.
  *
@@ -51,6 +43,20 @@ int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments, int **sizes);
  */
 int find_fragment(int *marks, int size);
 
+/**
+ * @brief Find the nearest fragment of path to a node.
+ *
+ * @param inst        The instance.
+ * @param node        The node.
+ * @param fragments   The array of fragments.
+ * @param size        The number of fragments.
+ * @param sizes       The sizes of the fragments.
+ * @param marks       Boolean array representing marked fragments.
+ * @param reverse     A boolean set to True if the nearest fragment found should
+ * be reversed to be connceted to the node.
+ * @return int        The index of the nearest fragment in the array (or NIL if
+ * none is found).
+ */
 int nearest_fragment(instance_t *inst, int node, int **fragments, int size,
                      int *sizes, int *marks, bool *reverse);
 
