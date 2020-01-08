@@ -48,6 +48,8 @@
 #define BAL_GPY 12
 
 typedef struct {
+  // == Entrées - Sorties ==
+
   //! Fichier TSP en entrée
   FILE *input_instance;
   //! Fichier CSV en sortie (par défaut stdout)
@@ -56,6 +58,19 @@ typedef struct {
   FILE *output_tour;
   //! Fichier de log (par défaut stderr)
   FILE *log;
+
+  // == Options pour Algo Génétique ==
+
+  //! Fréquence de mutation (par défaut 0.3)
+  double mutation_rate;
+  //! Taille de la population (par défaut 20)
+  int population_size;
+  //! Nombre de générations maximum (par défaut 200)
+  int generations;
+
+  // == Informations générales ==
+
+  //! Etat des options (présentes ou non)
   bool state[13];
 } cli_opt_t;
 

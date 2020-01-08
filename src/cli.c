@@ -8,6 +8,9 @@ void cli_opt__init(cli_opt_t *opt) {
   for (int i = 0; i < BAL_COUNT; i++) {
     opt->state[i] = false;
   }
+  opt->population_size = 20;
+  opt->generations = 200;
+  opt->mutation_rate = 0.3;
 }
 
 void cli(int argc, char const *argv[], cli_opt_t *opt) {
@@ -99,6 +102,35 @@ void cli(int argc, char const *argv[], cli_opt_t *opt) {
     else if (strcmp("-ga", argv[i]) == 0) {
       opt->state[BAL_GA] = true;
       methods++;
+      if (i + 3 < argc) {
+        if (argv[i + 1][0] != '-' && argv[i + 2][0] != '-' &&
+            argv[i + 3][0] != '-') {
+          if (sscanf(argv[i + 1], "%d", &opt->population_size) < 1) {
+            fprintf(stderr, COLOR_R
+                    "[cli - error] bad data format after flag (-ga)\n" COLOR_N);
+            exit(1);
+          }
+          if (sscanf(argv[i + 2], "%d", &opt->generations) < 1) {
+            fprintf(stderr, COLOR_R
+                    "[cli - error] bad data format after flag (-ga)\n" COLOR_N);
+            exit(1);
+          }
+          if (sscanf(argv[i + 3], "%lf", &opt->mutation_rate) < 1) {
+            fprintf(stderr, COLOR_R
+                    "[cli - error] bad data format after flag (-ga)\n" COLOR_N);
+            exit(1);
+          }
+          i = i + 3;
+          printf("genetic :\n");
+          printf("%d %d %lf\n", opt->population_size, opt->generations,
+                 opt->mutation_rate);
+        } else {
+          fprintf(
+              stderr, COLOR_R
+              "[cli - error] 3 arguments expected after flag (-ga)\n" COLOR_N);
+          exit(1);
+        }
+      }
     }
 
     // Balise -nz
