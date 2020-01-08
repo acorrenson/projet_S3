@@ -102,7 +102,7 @@ int main(int argc, char const *argv[]) {
 
   // === Affichage de la matrice des distances (verbose) ===
   if (opt.state[BAL_V]) {
-    fprintf(opt.log, "Matrice des distances :\n");
+    fprintf(opt.log, "Distances matrix :\n");
     instance__print_matrix(&instance);
   }
 
