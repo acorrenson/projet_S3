@@ -17,6 +17,6 @@ Méthode ; Longeur ; Temps CPU (sec) ; Tour
 bruteforce ; 20673.37 ; 7.00 ; [0, 4, 10, 5, 6, 7, 9, 8, 1, 3, 2]
 bruteforce (optimisation matricielle) ; 20673.37 ; 1.00 ; [0, 4, 10, 5, 6, 7, 9, 8, 1, 3, 2]
 nearest-neighbour ; 24185.80 ; 0.00 ; [0, 4, 10, 5, 2, 3, 1, 9, 8, 7, 6]
-randomwalk ; 45064.37 ; 0.00 ; [0, 8, 1, 3, 4, 9, 10, 2, 7, 6, 5]
-randomwalk (2opt) ; 42880.87 ; 0.00 ; [0, 10, 9, 4, 3, 1, 8, 2, 7, 6, 5]
+randomwalk ; 49714.63 ; 0.00 ; [0, 6, 4, 5, 2, 9, 7, 8, 3, 10, 1]
+randomwalk (2opt) ; 44359.23 ; 0.00 ; [0, 4, 6, 5, 2, 9, 7, 8, 3, 10, 1]
 nearest-neighbour (2opt) ; 23778.05 ; 0.00 ; [0, 4, 10, 6, 7, 8, 9, 1, 3, 2, 5]
