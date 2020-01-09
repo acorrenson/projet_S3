@@ -34,8 +34,10 @@ file(GLOB methods "./methods/*.c")
 # declare the executable
 add_executable(Tsp 
   utils.c
+  cli.c
   ${methods}
-  tsp.c)
+  tsp.c
+)
 
 target_link_libraries(Tsp
   tsplib
@@ -47,21 +49,25 @@ target_link_libraries(Tsp
 
 # declare library TESTINGLIB
 add_library(testinglib 
-  ../test/testing.c)
+  ../test/testing.c
+)
 
 # find test files
 file(GLOB tests "../test/*.test.c")
 
 # data for tests
 file(COPY ../test/test.tsp DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ../data/att10.tsp DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # main module to run every tests
 add_executable(Test
   ${tests}
   ./utils.c
   ${methods}
-  ../test/all_test.c)
+  ../test/all_test.c
+)
 
+# link modules needed for tests
 target_link_libraries(Test
   tsplib
   testinglib

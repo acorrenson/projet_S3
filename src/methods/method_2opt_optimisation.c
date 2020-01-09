@@ -16,8 +16,6 @@ point_t intersection(point_t d1, point_t d2) {
   return inter;
 }
 
-bool interesect(point_t d1, point_t d2) { return d1.x != d1.y; }
-
 double dist(point_t p1, point_t p2) {
   return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }
@@ -45,26 +43,37 @@ bool optimize_2opt(instance_t *instance, tour_t *tour) {
   int dim = instance->dimension;
   for (int i = 0; i < dim - 1; i++) {
     for (int j = 0; j < dim; j++) {
+
       if (i != j && i + 1 != (j + 1) % dim && i + 1 != j &&
           (j + 1) % dim != i) {
         int n1 = tour->tour[i];
         int n2 = tour->tour[i + 1];
         int n3 = tour->tour[j];
         int n4 = tour->tour[(j + 1) % dim];
-        point_t p1 = {instance->tabCoord[n1][0], instance->tabCoord[n1][1]};
-        point_t p2 = {instance->tabCoord[n2][0], instance->tabCoord[n2][1]};
-        point_t p3 = {instance->tabCoord[n3][0], instance->tabCoord[n3][1]};
-        point_t p4 = {instance->tabCoord[n4][0], instance->tabCoord[n4][1]};
+
+        point_t p1 = {instance->tabCoord[instance__index_of(instance, n1)][0],
+                      instance->tabCoord[instance__index_of(instance, n1)][1]};
+        point_t p2 = {instance->tabCoord[instance__index_of(instance, n2)][0],
+                      instance->tabCoord[instance__index_of(instance, n2)][1]};
+        point_t p3 = {instance->tabCoord[instance__index_of(instance, n3)][0],
+                      instance->tabCoord[instance__index_of(instance, n3)][1]};
+        point_t p4 = {instance->tabCoord[instance__index_of(instance, n4)][0],
+                      instance->tabCoord[instance__index_of(instance, n4)][1]};
+
         if (cross(p1, p2, p3, p4)) {
-          // printf("POSSIBLE OPT (%d %d)x(%d %d)!\n", n1, n2, n3, n4);
-          // decroiser
-          // -> inverser le chemin entre Noeud(i+1) et Noeud(j) (inclus)
+          // decroiser -> inverser le chemin entre Noeud(i+1) et Noeud(j)
+          // (inclus)
           reverse(tour->tour, (i + 1) % dim, j % dim);
-          tour__compute_length(instance, tour);
+          tour__compute_length(instance, tour, true);
           return true;
         }
       }
     }
   }
   return false;
+}
+
+void optimize_2opt_full(instance_t *instance, tour_t *tour) {
+  while (optimize_2opt(instance, tour)) {
+  };
 }

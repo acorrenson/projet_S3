@@ -12,16 +12,25 @@
 #define UTILS_H
 
 #include <assert.h>
+#include <pretty.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#define TAILLENOM 32 // les noms sont limités à 32 caractères
-#define MAXBUF 256   // taille du buffer de lecture des fichiers
-#define NIL -1       // indique l'échec dans une fonction
+//! les noms sont limités à 32 caractères
+#define TAILLENOM 32
+//! taille du buffer de lecture des fichiers
+#define MAXBUF 256
+//! indique l'échec dans une fonction
+#define NIL -1
 
 /**
- * @brief Inverse un tableau d'entiers
+ * @brief Inverse un segment de tableau d'entiers.
  *
+ * @param tab   Le tableau
+ * @param start Indice de début de segment
+ * @param stop  Indice de fin de segment
  */
-void reverse(int *, int, int);
+void reverse(int *tab, int start, int stop);
 
 /**
  * @brief Trie un segment de tableau d'entiers
@@ -32,6 +41,20 @@ void reverse(int *, int, int);
  */
 void quick_sort(int *tab, int a, int b);
 
+/**
+ * @brief Intervertir deux entiers.
+ *
+ */
 void swap(int *, int *);
+
+/**
+ * @brief Essaye d'ouvrir un fichier, interrompt l'execution du programme si
+ * l'ouverture est impossible.
+ *
+ * @param name    Le nom du fichier.
+ * @param mode    Le mode (0 lecture, 1 écriture)
+ * @return FILE*  Le fichier ouvert.
+ */
+FILE *read_or_fail(const char *name, int mode);
 
 #endif

@@ -6,4 +6,5 @@ int main(int argc, char const *argv[]) {
   tsplib_run_test();
   method_bruteforce_run_test();
   method_nn_run_test();
+  method_genetic_run_test();
 }

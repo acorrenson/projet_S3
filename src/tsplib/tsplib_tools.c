@@ -1,6 +1,6 @@
 #include <tsplib/tsplib.h>
 
-void instance__init(instance_t *instance) {
+void instance__init(instance_t *instance, bool zero) {
   strcpy(instance->name, "NO_NAME");
   strcpy(instance->type, "NO_TYPE");
   instance->dimension = 0;
@@ -8,6 +8,7 @@ void instance__init(instance_t *instance) {
   instance->tabCoord = NULL;
   instance->matDist = NULL;
   instance->tabTour = NULL;
+  instance->node_zero = zero;
 }
 
 void tour__init(tour_t *tour) {
@@ -18,30 +19,34 @@ void tour__init(tour_t *tour) {
   tour->current = 0;
 }
 
-double instance__dist_euclidian(instance_t *instance, int a, int b) {
-  assert(0 <= a && a < instance->dimension);
-  assert(0 <= b && a < instance->dimension);
+void tour__copy(tour_t *t1, const tour_t *t2) {
+  strcpy(t1->name, t2->name);
+  t1->length = t2->length;
+  t1->dimension = t2->dimension;
+  for (int i = 0; i < t1->dimension; i++) {
+    t1->tour[i] = t2->tour[i];
+  }
+}
 
-  int x1 = instance->tabCoord[a][0];
-  int y1 = instance->tabCoord[a][1];
-  int x2 = instance->tabCoord[b][0];
-  int y2 = instance->tabCoord[b][1];
+double instance__dist_euclidian(instance_t *instance, int a, int b) {
+  int x1 = instance->tabCoord[instance__index_of(instance, a)][0];
+  int y1 = instance->tabCoord[instance__index_of(instance, a)][1];
+  int x2 = instance->tabCoord[instance__index_of(instance, b)][0];
+  int y2 = instance->tabCoord[instance__index_of(instance, b)][1];
 
   double r = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-  // printf("(%d %d) (%d %d)\n", x1, x2, y1, y2);
-  // printf("r [%d %d] = %f\n", a, b, r);
   return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
 double instance__dist_matrix(instance_t *instance, int a, int b) {
-  assert(0 <= a && a < instance->dimension);
-  assert(0 <= b && a < instance->dimension);
 
   // on utilise une demie matrice SUPERIEURE
   if (a < b)
-    return instance->matDist[a][b];
+    return instance->matDist[instance__index_of(instance, a)]
+                            [instance__index_of(instance, b)];
   else
-    return instance->matDist[b][a];
+    return instance->matDist[instance__index_of(instance, b)]
+                            [instance__index_of(instance, a)];
 }
 
 void instance__compute_distances(instance_t *instance) {
@@ -52,7 +57,9 @@ void instance__compute_distances(instance_t *instance) {
 
   for (int i = 0; i < instance->dimension; i++) {
     for (int j = i + 1; j < instance->dimension; j++) {
-      instance->matDist[i][j] = instance__dist_euclidian(instance, i, j);
+      instance->matDist[i][j] =
+          instance__dist_euclidian(instance, instance__node_at(instance, i),
+                                   instance__node_at(instance, j));
     }
   }
 }
@@ -65,16 +72,27 @@ void instance__reset(instance_t *instance) {
 
 void tour__set_dimension(tour_t *t, int dim) {
   t->dimension = dim;
+  t->current = 0;
   t->tour = malloc(dim * sizeof(int));
 }
 
 void tour__add_node(tour_t *t, int node) {
-  assert(0 <= node < t->dimension && t->current < t->dimension);
   t->tour[t->current] = node;
   t->current++;
 }
 
-double tour__compute_length(instance_t *instance, tour_t *tour) {
+bool tour__has_node(tour_t *t, int node) {
+  int i = 0;
+  while (i < t->dimension && t->tour[i] != node) {
+    i++;
+  }
+  if (i >= t->dimension)
+    return false;
+  else
+    return true;
+}
+
+double tour__compute_length(instance_t *instance, tour_t *tour, bool optimize) {
   assert(tour->dimension == instance->dimension);
   int i = 0;
   tour->length = 0.0;
@@ -82,36 +100,33 @@ double tour__compute_length(instance_t *instance, tour_t *tour) {
   for (int i = 0; i < instance->dimension; i++) {
     int n1 = tour->tour[i];
     int n2 = tour->tour[(i + 1) % (instance->dimension)];
-    double dist = instance__dist_euclidian(instance, n1, n2);
+    double dist;
+    if (optimize) {
+      dist = instance__dist_matrix(instance, n1, n2);
+    } else {
+      dist = instance__dist_euclidian(instance, n1, n2);
+    }
     tour->length += dist;
   }
   return tour->length;
 }
 
-double instance__compute_length(instance_t *instance) {
+double instance__compute_length(instance_t *instance, bool optimize) {
   int i = 0;
   instance->length = 0.0;
 
   for (int i = 0; i < instance->dimension; i++) {
     int n1 = instance->tabTour[i];
     int n2 = instance->tabTour[(i + 1) % (instance->dimension)];
-    double dist = instance__dist_euclidian(instance, n1, n2);
+    double dist;
+    if (optimize) {
+      dist = instance__dist_matrix(instance, n1, n2);
+    } else {
+      dist = instance__dist_euclidian(instance, n1, n2);
+    }
     instance->length += dist;
   }
   return instance->length;
-
-  // while (i + 1 < instance->dimension) {
-  //   instance->length += instance__dist_euclidian(instance,
-  //   instance->tabTour[i],
-  //                                                instance->tabTour[i +
-  //                                                1]);
-  //   i++;
-  // }
-  // instance->length += instance__dist_euclidian(
-  //     instance, instance->tabTour[instance->dimension - 1],
-  //     instance->tabTour[0]);
-
-  // return instance->length;
 }
 
 void instance__extract_tour(instance_t *instance, tour_t *tour) {
@@ -124,8 +139,73 @@ void instance__extract_tour(instance_t *instance, tour_t *tour) {
   tour->length = instance->length;
 }
 
-void instance__set_tour(instance_t *instance, tour_t *tour) {
-  assert(instance->dimension == tour->dimension);
-  memcpy(instance->tabTour, tour->tour, tour->dimension * sizeof(int));
-  tour->length = instance->length;
+void instance__mark(instance_t *instance, int node) {
+  instance->tabCoord[instance__index_of(instance, node)][2] = 1;
+}
+
+void instance__unmark(instance_t *instance, int node) {
+  instance->tabCoord[instance__index_of(instance, node)][2] = 0;
+}
+
+bool instance__marked(instance_t *instance, int node) {
+  if (instance->tabCoord[instance__index_of(instance, node)][2] == 0) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+int instance__find_non_marked(instance_t *instance) {
+  for (int i = 0; i < instance->dimension; i++) {
+    if (!instance__marked(instance, instance__node_at(instance, i)))
+      return instance__node_at(instance, i);
+  }
+  return NIL;
+}
+
+int instance__index_of(instance_t *inst, int node) {
+  if (inst->node_zero) {
+    return node;
+  } else {
+    return node - 1;
+  }
+}
+
+int instance__node_at(instance_t *inst, int index) {
+  if (inst->node_zero) {
+    return index;
+  } else {
+    return index + 1;
+  }
+}
+
+// void tour__get_edges(tour_t *t, int ***edges) {
+//   *edges = malloc(t->dimension * sizeof(int *));
+//   for (int i = 0; i < t->dimension; i++) {
+//     (*edges)[i] = malloc(2 * sizeof(int));
+//     if (t->tour[i] < t->tour[(i + 1) % t->dimension]) {
+//       (*edges)[i][0] = t->tour[i];
+//       (*edges)[i][1] = t->tour[(i + 1) % t->dimension];
+//     } else {
+//       (*edges)[i][0] = t->tour[(i + 1) % t->dimension];
+//       (*edges)[i][1] = t->tour[i];
+//     }
+//   }
+// }
+
+void tour__from_array(tour_t *t, int array[], int dim) {
+  tour__set_dimension(t, dim);
+  for (int i = 0; i < dim; i++) {
+    t->tour[i] = array[i];
+  }
+}
+
+int tour__index_of(tour_t *t, int node) {
+  int i = 0;
+  while (i < t->dimension && t->tour[i] != node) {
+    i++;
+  }
+  if (i >= t->dimension)
+    return NIL;
+  return i;
 }

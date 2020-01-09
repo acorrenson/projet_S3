@@ -1,11 +1,14 @@
 CC = /usr/bin/gcc
 
-.PHONY: build all clean doc
+.PHONY: build all clean doc graph
 
 all: build
 
 run: build
-	@ ./build/Tsp ./src/att10.tsp
+	@ ./build/Tsp -f ./data/att10.tsp -bf -rw -bfm -ppv -v -2opt -o ./data/results.csv
+
+graph:
+	@ python3 ./scripts/graph.py ./data/results.csv
 
 test: build
 	@ cd build/ && ./Test

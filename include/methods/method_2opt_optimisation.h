@@ -1,3 +1,14 @@
+/**
+ * @file method_2opt_optimisation.h
+ * @author Arthur Correnson (arthur.correnson@univ-tlse3.fr)
+ * @brief Fonctions d'optimisation des tournées par décroisement des chemins.
+ * @version 0.1
+ * @date 2019-12-23
+ *
+ * @copyright Copyright (c) 2019
+ *
+ */
+
 #ifndef METHOD_2OPT_H
 #define METHOD_2OPT_H
 
@@ -14,7 +25,7 @@ typedef struct {
 } point_t;
 
 /**
- * @brief Clacul l'équation d'une droite passant par deux points.
+ * @brief Calcul l'équation d'une droite passant par deux points.
  *
  * @param p1 Point 1
  * @param p2 Point 2
@@ -23,7 +34,7 @@ typedef struct {
 point_t line_of_points(point_t p1, point_t p2);
 
 /**
- * @brief Clacul le point d'ntersection entre deux droites.
+ * @brief Calcul le point d'intersection entre deux droites.
  *
  * @param d1  Droite 1
  * @param d2  Droite 2
@@ -32,29 +43,24 @@ point_t line_of_points(point_t p1, point_t p2);
 point_t intersection(point_t d1, point_t d2);
 
 /**
- * @brief Test si deux droites se croisent.
+ * @brief Distance euclidienne entre deux points.
  *
- */
-bool interesect(point_t d1, point_t d2);
-
-/**
- * @brief Distance euclidienne entre deux points
- *
+ * @param p1 Point 1.
+ * @param p2 Point 2.
  */
 double dist(point_t p1, point_t p2);
 
 /**
- * @brief Clacul le centre d'un segment.
+ * @brief Calcul le centre d'un segment.
  *
  * @param p1  Extrémité 1 du segment.
  * @param p2  Extrémité 2 du segment.
  * @return    Centre.
  */
-
 point_t center_of_segment(point_t p1, point_t p2);
 
 /**
- * @brief Test si deux segements se croisent.
+ * @brief Test si deux segments se croisent.
  *
  * @param p1  Extrémité 1 du segment 1.
  * @param p2  Extrémité 2 du segment 1.
@@ -63,6 +69,23 @@ point_t center_of_segment(point_t p1, point_t p2);
  */
 bool cross(point_t p1, point_t p2, point_t p3, point_t p4);
 
-bool optimize_2opt(instance_t *instance, tour_t *);
+/**
+ * @brief Effectue l'optimisation d'une tournée.
+ *
+ * @param instance Instance d'origine.
+ * @param tour Tournée à optimiser.
+ * @return true   Si l'optimisation a pu être appliquée
+ * @return false  Si l'optimisation n'a pu être appliquée
+ */
+bool optimize_2opt(instance_t *instance, tour_t *tour);
+
+/**
+ * @brief Effectue l'optimisation maximale d'une tournée (application de @ref
+ * optimize_2opt tant que possible).
+ *
+ * @param instance  L'instance.
+ * @param tour      La tournée à optimiser.
+ */
+void optimize_2opt_full(instance_t *instance, tour_t *tour);
 
 #endif

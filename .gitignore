@@ -4,3 +4,4 @@
 /latex
 /html
 .vscode/
+*.code-workspace

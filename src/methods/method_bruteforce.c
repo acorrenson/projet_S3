@@ -36,20 +36,21 @@ bool next_permutation(int *permut, int dim) {
   return true;
 }
 
-void brute_force(instance_t *instance, tour_t *result) {
+void brute_force(instance_t *instance, tour_t *result, bool optimize) {
   int dim = instance->dimension;
   instance->tabTour = malloc(dim * sizeof(int));
 
   for (int i = 0; i < dim; i++) {
-    instance->tabTour[i] = i;
+    instance->tabTour[i] = instance__node_at(instance, i);
   }
 
   tour_t best_tour;
-  instance__compute_length(instance);
+
+  instance__compute_length(instance, optimize);
   instance__extract_tour(instance, &best_tour);
 
   while (next_permutation(instance->tabTour + 1, dim - 1)) {
-    if (instance__compute_length(instance) < best_tour.length) {
+    if (instance__compute_length(instance, optimize) < best_tour.length) {
       instance__extract_tour(instance, &best_tour);
     }
   }

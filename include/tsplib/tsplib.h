@@ -25,13 +25,22 @@
  *
  */
 typedef struct instance_s {
-  char name[TAILLENOM]; // nom de l'instance
-  char type[TAILLENOM]; // type de l'instance
-  int dimension;        // nombre de sommets dans l'instance
-  double length;        // longueur de la tournée (calcul)
-  int **tabCoord;   // tableau des coordonnées (x,y,marque=0 pas vu, n° ordre)
-  double **matDist; // demie matrice des distances euclidiennes (calcul)
-  int *tabTour; // tableau des villes formant la tournée (dans l'ordre) (calcul)
+  //! nom de l'instance
+  char name[TAILLENOM];
+  //! type de l'instance
+  char type[TAILLENOM];
+  //! nombre de sommets dans l'instance
+  int dimension;
+  //! longueur de la tournée (calcul)
+  double length;
+  //! tableau des coordonnées (x,y,marque=0 pas vu, n° ordre)
+  int **tabCoord;
+  //! demie matrice des distances euclidiennes (calcul)
+  double **matDist;
+  //! tableau des villes formant la tournée (dans l'ordre) (calcul)
+  int *tabTour;
+  //! prise en compte de la ville (0, 0) (true par défaut)
+  bool node_zero;
 } instance_t;
 
 /**
@@ -39,10 +48,15 @@ typedef struct instance_s {
  *
  */
 typedef struct tour_s {
-  char name[TAILLENOM]; // nom de l'instance
-  int dimension;        // nombre de sommets dans l'instance
-  double length;        // longueur du tour (calculée ou lue)
-  int *tour; // liste des noeuds de la tournée lus dans le fichier tour
+  //! nom de l'instance
+  char name[TAILLENOM];
+  //! nombre de sommets dans l'instance
+  int dimension;
+  //! longueur du tour
+  double length;
+  //! liste des noeuds de la tournée
+  int *tour;
+  //! noeud courant
   int current;
 } tour_t;
 
@@ -54,29 +68,21 @@ typedef struct tour_s {
  * @brief   Lecture d'un fichier au format TSP
  *
  */
-void instance__read_from_file(instance_t *, const char *);
+void instance__read_from_file(instance_t *, FILE *);
 
 /**
- * @brief   Ecriture d'un tour dans un fichier.
+ * @brief Ecriture d'un tour dans un fichier (au format .tour).
  *
+ * @param zero Précise si la numérotation des noeuds commence à zero ou le cas
+ * contraire à 1.
  */
-void tour__write_to_file(tour_t *, FILE *);
-
-void instance__write_coords_to_file(instance_t *instance, FILE *file);
-
-/**
- * @brief Ecriture d'une instance dans un fichier
- *
- */
-void instance__write_to_file(instance_t *, FILE *);
+void tour__write_as_tsp(tour_t *, FILE *);
 
 /**
  * @brief Affiche la matrice des distances d'une instance.
  *
  */
 void instance__print_matrix(instance_t *);
-void instance__write_coords_to_file(instance_t *instance, FILE *file);
-void tour__write_coords_to_file(instance_t *, tour_t *, FILE *);
 
 // ==================================================
 // == INITIALISASIONS
@@ -86,8 +92,13 @@ void tour__write_coords_to_file(instance_t *, tour_t *, FILE *);
  * @brief Initialisation d'une instance TSP.
  *
  */
-void instance__init(instance_t *);
+void instance__init(instance_t *, bool);
 
+/**
+ * @brief Réinitialisation d'une instance TSP.
+ * (Les marqueurs sont remis à 0).
+ *
+ */
 void instance__reset(instance_t *);
 
 /**
@@ -95,6 +106,12 @@ void instance__reset(instance_t *);
  *
  */
 void tour__init(tour_t *);
+
+void tour__copy(tour_t *, const tour_t *);
+
+void tour__pprint(tour_t *, FILE *out);
+
+void tour__from_array(tour_t *t, int array[], int dim);
 
 /**
  * @brief Ajoute un noeud au tour.
@@ -121,19 +138,21 @@ void tour__set_dimension(tour_t *, int);
 double instance__dist_euclidian(instance_t *, int, int);
 
 /**
- * @brief Récupérer la distance qui sépare deux noeuds dans la matrice.
+ * @brief Récupérer la distance qui sépare deux noeuds dans la matrice des
+ * distances (suppose que la méthode @ref instance__compute_distances ait déjà
+ * été appellée au moins une fois avant).
  *
  */
 double instance__dist_matrix(instance_t *, int, int);
 
 /**
- * @brief Calculer les distances entre tous les noeuds d'une instance TSP.
+ * @brief Initialise la matrice des distances dans une instance TSP.
  *
  */
 void instance__compute_distances(instance_t *);
 
 /**
- * @brief Assure qu'un tour comprend un noeud.
+ * @brief Assure qu'un tour comprend un noeud donné.
  *
  * @return true
  * @return false
@@ -141,27 +160,87 @@ void instance__compute_distances(instance_t *);
 bool tour__has_node(tour_t *, int);
 
 /**
- * @brief Copie un tour à l'adresse souhaitée.
+ * @brief Calculer la longueur de la tournée en cours de calcul dans une
+ * instance.
  *
+ * @return double
  */
-void tour__copy(tour_t *, tour_t);
-
-double instance__compute_length(instance_t *);
-double tour__compute_length(instance_t *, tour_t *);
+double instance__compute_length(instance_t *, bool);
 
 /**
- * @brief Extraire la tournée courante d'une instance et initialise une
- * structure tour avec.
+ * @brief Calculer la longueur d'une tournée.
+ *
+ * @param instance L'instance de référence.
+ * @param tour La tournée.
+ * @return double
+ */
+double tour__compute_length(instance_t *instance, tour_t *tour, bool);
+
+/**
+ * @brief Extraire la tournée courante d'une instance et
+ * initialise une structure @ref tour_t avec.
  *
  */
 void instance__extract_tour(instance_t *, tour_t *);
 
 /**
- * @brief Copie de la tournée courante d'une instance dans une structure tour
- * déjà initialisée pour l'instance (avec @ref instance__extract_tour
- * typiquement).
+ * @brief Marque un neoud.
  *
  */
-void instance__set_tour(instance_t *, tour_t *);
+void instance__mark(instance_t *instance, int node);
+
+/**
+ * @brief Retirer la marque d'un noeud.
+ *
+ */
+void instance__unmark(instance_t *instance, int node);
+
+/**
+ * @brief Test si un noeud est marqué.
+ *
+ */
+bool instance__marked(instance_t *instance, int node);
+
+/**
+ * @brief Cherche le premier noeud non marqué.
+ *
+ */
+int instance__find_non_marked(instance_t *instance);
+
+/**
+ * @brief Calcul le noeud d'indice "index" dans une instance.
+ *
+ * @param inst  L'instance.
+ * @param index L'indice.
+ * @return int  Le noeud d'indice "index".
+ */
+int instance__node_at(instance_t *inst, int index);
+
+/**
+ * @brief Calcul l'indice d'un noeud dans une instance.
+ *
+ * @param inst  L'instance.
+ * @param node  Le noeud.
+ * @return int  L'indice du noeud.
+ */
+int instance__index_of(instance_t *inst, int node);
+
+/**
+ * @brief Extraire la list des arrêtes d'une tournée (les couples arrêtes sont
+ * donnés dans l'ordre croissant).
+ *
+ * @param t     La tournée.
+ * @param edges Les arrêtes.
+ */
+void tour__get_edges(tour_t *t, int ***edges);
+
+/**
+ * @brief   Trouve la position d'un noeud dans une tournée.
+ *
+ * @param t     La tournée.
+ * @param node  Le noeud.
+ * @return int  La position du noeud (ou NIL si le noeud est absent).
+ */
+int tour__index_of(tour_t *t, int node);
 
 #endif
