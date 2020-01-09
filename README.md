@@ -27,7 +27,7 @@ Pour fluidifier la lecture du code et de l'ensemble des fichiers sources, nous a
 + **Nom de variable** : les noms de variables sont écris en ANGLAIS pour être compréhensibles par le plus grand nombre. Ils sont notés en convention *snake-case*.
 + **Nom de constante** : les constantes sont nommées en majuscules.
 + **Nom de fonction** : les noms de fonctions sont notés en ANGLAIS et suivent la convention *snake-case*. Ce choix est pris pour faciliter la compréhension du sens des fonctions. 
-+ **Nom de procédures/fonctions sur les structures** : afin de reconnaître immédiatement les fonctions et procédures travaillant sur un type particulier de structure, ces fonctions voient leurs noms préfixés par le type de structure sur lequel elles opérent suivie de deux symboles (`_`). Par exemple `instance__read_from_file` est une méthode opérant sur une structure de type `instance` et sons sens est transparent.
++ **Nom de procédures/fonctions sur les structures** : afin de reconnaître immédiatement les fonctions et procédures travaillant sur un type particulier de structure, ces fonctions voient leurs noms préfixés par le type de structure sur lequel elles opèrent suivi de deux symboles (`_`). Par exemple `instance__read_from_file` est une méthode opérant sur une structure de type `instance` et sons sens est transparent.
 + **Fichiers de tests** : les fichiers de tests sont nommés selon la syntaxe `nom_du_module_testé.test.c`. Il devient ainsi facile de les sélectionner tous en utilisant le filtre `*.test.c`.
 
 ## Processus de compilation
