@@ -193,8 +193,6 @@ int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
   int frag_size = 0;
   int dim = t1->dimension;
   int node_left = dim;
-  bool *marked_1 = malloc(sizeof(bool) * dim);
-  bool *marked_2 = malloc(sizeof(bool) * dim);
 
   //  == allocation ==
   *fragments = malloc(t1->dimension * sizeof(int *));
@@ -203,8 +201,6 @@ int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
   for (int i = 0; i < t1->dimension; i++) {
     (*fragments)[i] = malloc(t1->dimension * sizeof(int));
     (*sizes)[i] = 0;
-    marked_1[i] = false;
-    marked_2[i] = false;
   }
 
   int i1 = 0;
@@ -265,11 +261,11 @@ int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
     }
     (*sizes)[frag_index] = frag_size;
     node_left = node_left - frag_size;
-    printf("Found fragment : (%d)\n", frag_size);
-    for (int i = 0; i < frag_size; i++) {
-      printf("%d ", (*fragments)[frag_index][i]);
-    }
-    printf("\n");
+    // printf("Found fragment : (%d)\n", frag_size);
+    // for (int i = 0; i < frag_size; i++) {
+    //   printf("%d ", (*fragments)[frag_index][i]);
+    // }
+    // printf("\n");
     frag_index++;
     frag_size = 0;
     i1++;
