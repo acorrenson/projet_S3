@@ -73,9 +73,9 @@ void instance__reset(instance_t *instance) {
 void tour__set_dimension(tour_t *t, int dim) {
   t->dimension = dim;
   t->current = 0;
-  if (t->tour != NULL) {
-    free(t->tour);
-  }
+  // if (t->tour != NULL) {
+  //   free(t->tour);
+  // }
   t->tour = malloc(dim * sizeof(int));
 }
 

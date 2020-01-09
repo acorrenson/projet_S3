@@ -126,8 +126,8 @@ bool edge_in(int **edges, int edge[2], int size) {
   return in;
 }
 
-int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
-                         int **sizes) {
+int get_shared_fragments2(tour_t *t1, tour_t *t2, int ***fragments,
+                          int **sizes) {
   int **edges1;
   int **edges2;
   // calcul des arrêtes de t1
@@ -181,6 +181,102 @@ int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
   }
 
   return ifrag + 1;
+}
+
+int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
+                         int **sizes) {
+  assert(t1->dimension == t2->dimension);
+  // assert(tour__is_consistent(t1) && tour__is_consistent(t1));
+
+  // == initialisation ==
+  int frag_index = 0;
+  int frag_size = 0;
+  int dim = t1->dimension;
+  int node_left = dim;
+  bool *marked_1 = malloc(sizeof(bool) * dim);
+  bool *marked_2 = malloc(sizeof(bool) * dim);
+
+  //  == allocation ==
+  *fragments = malloc(t1->dimension * sizeof(int *));
+  *sizes = malloc(t1->dimension * sizeof(int));
+
+  for (int i = 0; i < t1->dimension; i++) {
+    (*fragments)[i] = malloc(t1->dimension * sizeof(int));
+    (*sizes)[i] = 0;
+    marked_1[i] = false;
+    marked_2[i] = false;
+  }
+
+  int i1 = 0;
+  int i2 = 0;
+
+  // == recherche ==
+  while (node_left > 0 && i1 < dim) {
+    // printf("start : i1 : %d, i2 : %d\n", i1, i2);
+    i2 = 0;
+    while (t2->tour[i2] != t1->tour[i1]) {
+      i2++;
+    }
+
+    // printf("starting with %d\n", t1->tour[i1]);
+    (*fragments)[frag_index][frag_size] = t1->tour[i1];
+    frag_size++;
+
+    // (*fragments)[frag_index][0] = t1->tour[i1];
+    // (*sizes)[frag_index] = 1;
+    // frag_index++;
+    // i1++;
+    // frag_size = 0;
+
+    if (t1->tour[i1 + 1] == t2->tour[(i2 + 1) % dim]) {
+      // printf("Match (ord) bt %d - %d\n", t1->tour[i1 + 1],
+      //  t2->tour[(i2 + 1) % dim]);
+      i1++;
+      i2++;
+      (*fragments)[frag_index][frag_size] = t1->tour[i1];
+      frag_size++;
+      while (i1 < dim - 1 && t1->tour[i1 + 1] == t2->tour[(i2 + 1) % dim]) {
+        // printf("Match (ord) bt %d - %d\n", t1->tour[i1 + 1],
+        //  t2->tour[(i2 + 1) % dim]);
+        i1++;
+        i2++;
+        (*fragments)[frag_index][frag_size] = t1->tour[i1];
+        frag_size++;
+      }
+    } else if (t1->tour[i1 + 1] == t2->tour[(i2 - 1) % dim]) {
+      // printf("Match (rev) bt %d - %d\n", t1->tour[i1 + 1],
+      //  t2->tour[(i2 - 1 + dim) % dim]);
+      i1++;
+      i2--;
+      (*fragments)[frag_index][frag_size] = t1->tour[i1];
+      frag_size++;
+      while (i1 < dim - 1 &&
+             t1->tour[i1 + 1] == t2->tour[(i2 - 1 + dim) % dim]) {
+        // printf("Match (rev) bt %d - %d\n", t1->tour[i1 + 1],
+        //  t2->tour[(i2 - 1 + dim) % dim]);
+        i1++;
+        i2--;
+        (*fragments)[frag_index][frag_size] = t1->tour[i1];
+        frag_size++;
+      }
+    } else {
+      (*fragments)[frag_index][0] = t1->tour[i1];
+      frag_size = 1;
+    }
+    (*sizes)[frag_index] = frag_size;
+    node_left = node_left - frag_size;
+    printf("Found fragment : (%d)\n", frag_size);
+    for (int i = 0; i < frag_size; i++) {
+      printf("%d ", (*fragments)[frag_index][i]);
+    }
+    printf("\n");
+    frag_index++;
+    frag_size = 0;
+    i1++;
+  }
+
+  printf("N = %d\n", frag_index);
+  return frag_index;
 }
 
 int get_best(tour_t *population, int size) {

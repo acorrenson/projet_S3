@@ -80,6 +80,7 @@ void method_genetic_run_test() {
   check3 = true;
   for (int i = 0; i < 3; i++) {
     check3 = check3 && (frags[0][i] == i + 1);
+    printf("%d ", frags[0][i]);
   }
 
   test_ensure(
@@ -185,9 +186,34 @@ void method_genetic_run_test() {
   check = true;
   for (int i = 0; i < inst.dimension; i++) {
     check = check && (tour__has_node(&res, instance__node_at(&inst, i)));
+    printf("%d ", res.tour[i]);
   }
+  printf("\n");
 
   test_ensure(&test, "The result of the genetic method is consistent", check);
+
+  tour_t test_1;
+  tour_t test_2;
+  tour__set_dimension(&test_1, 4);
+  tour__set_dimension(&test_2, 4);
+  int t_1[4] = {1, 2, 3, 4};
+  int t_2[4] = {1, 2, 4, 3};
+
+  for (int i = 0; i < 4; i++) {
+    test_1.tour[i] = t_1[i];
+    test_2.tour[i] = t_2[i];
+  }
+
+  int **frags_2;
+  int *sizes_2;
+  int size_2;
+  size = get_shared_fragments(&test_1, &test_2, &frags_2, &sizes_2);
+  for (int i = 0; i < size_2; i++) {
+    for (int j = 0; j < sizes_2[i]; j++) {
+      printf("%d ", frags_2[i][j]);
+    }
+    printf("\n");
+  }
 
   end_test(&test);
 }
