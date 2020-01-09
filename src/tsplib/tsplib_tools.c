@@ -73,9 +73,6 @@ void instance__reset(instance_t *instance) {
 void tour__set_dimension(tour_t *t, int dim) {
   t->dimension = dim;
   t->current = 0;
-  // if (t->tour != NULL) {
-  //   free(t->tour);
-  // }
   t->tour = malloc(dim * sizeof(int));
 }
 
@@ -194,5 +191,12 @@ void tour__get_edges(tour_t *t, int ***edges) {
       (*edges)[i][0] = t->tour[(i + 1) % t->dimension];
       (*edges)[i][1] = t->tour[i];
     }
+  }
+}
+
+void tour__from_array(tour_t *t, int array[], int dim) {
+  tour__set_dimension(t, dim);
+  for (int i = 0; i < dim; i++) {
+    t->tour[i] = array[i];
   }
 }

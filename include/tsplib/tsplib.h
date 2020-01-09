@@ -111,6 +111,8 @@ void tour__copy(tour_t *, const tour_t *);
 
 void tour__pprint(tour_t *, FILE *out);
 
+void tour__from_array(tour_t *t, int array[], int dim);
+
 /**
  * @brief Ajoute un noeud au tour.
  *

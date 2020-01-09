@@ -202,7 +202,6 @@ int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
     (*fragments)[i] = malloc(t1->dimension * sizeof(int));
     (*sizes)[i] = 0;
   }
-
   int i1 = 0;
   int i2 = 0;
 
@@ -218,30 +217,24 @@ int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
     (*fragments)[frag_index][frag_size] = t1->tour[i1];
     frag_size++;
 
-    // (*fragments)[frag_index][0] = t1->tour[i1];
-    // (*sizes)[frag_index] = 1;
-    // frag_index++;
-    // i1++;
-    // frag_size = 0;
-
     if (t1->tour[i1 + 1] == t2->tour[(i2 + 1) % dim]) {
       // printf("Match (ord) bt %d - %d\n", t1->tour[i1 + 1],
-      //  t2->tour[(i2 + 1) % dim]);
+      //        t2->tour[(i2 + 1) % dim]);
       i1++;
       i2++;
       (*fragments)[frag_index][frag_size] = t1->tour[i1];
       frag_size++;
       while (i1 < dim - 1 && t1->tour[i1 + 1] == t2->tour[(i2 + 1) % dim]) {
         // printf("Match (ord) bt %d - %d\n", t1->tour[i1 + 1],
-        //  t2->tour[(i2 + 1) % dim]);
+        //        t2->tour[(i2 + 1) % dim]);
         i1++;
         i2++;
         (*fragments)[frag_index][frag_size] = t1->tour[i1];
         frag_size++;
       }
-    } else if (t1->tour[i1 + 1] == t2->tour[(i2 - 1) % dim]) {
+    } else if (t1->tour[i1 + 1] == t2->tour[(i2 - 1 + dim) % dim]) {
       // printf("Match (rev) bt %d - %d\n", t1->tour[i1 + 1],
-      //  t2->tour[(i2 - 1 + dim) % dim]);
+      //        t2->tour[(i2 - 1 + dim) % dim]);
       i1++;
       i2--;
       (*fragments)[frag_index][frag_size] = t1->tour[i1];
@@ -249,7 +242,7 @@ int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments,
       while (i1 < dim - 1 &&
              t1->tour[i1 + 1] == t2->tour[(i2 - 1 + dim) % dim]) {
         // printf("Match (rev) bt %d - %d\n", t1->tour[i1 + 1],
-        //  t2->tour[(i2 - 1 + dim) % dim]);
+        //        t2->tour[(i2 - 1 + dim) % dim]);
         i1++;
         i2--;
         (*fragments)[frag_index][frag_size] = t1->tour[i1];
