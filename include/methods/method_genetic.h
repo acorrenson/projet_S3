@@ -13,6 +13,7 @@
 #define METHODE_GENETIC_H
 
 #include <cli.h>
+#include <methods/method_2opt_optimisation.h>
 #include <methods/method_nearest_neighbour.h>
 #include <methods/method_random_walk.h>
 #include <tsplib/tsplib.h>

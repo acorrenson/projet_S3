@@ -189,7 +189,7 @@ int get_best(tour_t *population, int size) {
   double min_len = population[0].length;
   int imin = 0;
   for (int i = 1; i < size; i++) {
-    if (population[i].length < imin) {
+    if (population[i].length < min_len) {
       min_len = population[i].length;
       imin = i;
     }
@@ -209,7 +209,7 @@ int get_worst(tour_t *population, int size) {
   int worst_len = population[0].length;
   int i_worst = 0;
   for (int i = 1; i < size; i++) {
-    if (population[i].length < worst_len) {
+    if (population[i].length > worst_len) {
       i_worst = i;
       worst_len = population[i].length;
     }
@@ -252,24 +252,25 @@ void genetic(instance_t *instance, tour_t *tour, cli_opt_t *opt) {
     instance__reset(instance);
   }
 
-  int i1, i2;
+  int i1, i2, i3;
+  double mutation;
   for (int generation = 0; generation < max_generation; generation++) {
-    for (int i = 0; i < pop_size; i++) {
+    for (int i = 0; i < (int)pop_size / 3; i++) {
+      i3 = get_worst(population, pop_size);
       peek_2_randomly(pop_size, &i1, &i2);
-      cross_dpx(instance, &population[i1], &population[i2], &mating_pool[i]);
+      cross_dpx(instance, &population[i1], &population[i2], &population[i3]);
+      mutation = ((double)(rand() % 100)) / 100.0;
+      if (mutation < opt->mutation_rate) {
+        optimize_2opt(instance, &population[i3]);
+      }
     }
-    for (int i = 0; i < pop_size; i++) {
-      tour__copy(population + i, mating_pool + i);
-    }
-
-    tour__copy(tour, &population[get_best(population, pop_size)]);
 
     if (opt->state[BAL_V]) {
       fprintf(opt->log, "generation  : %d\n", generation);
       fprintf(opt->log, "best tour   : " COLOR_G "%.2f\n" COLOR_N,
               population[0].length);
     }
+    tour__copy(tour, &population[get_best(population, pop_size)]);
   }
-  free(mating_pool);
   free(population);
 }

@@ -67,7 +67,7 @@ void method_genetic_run_test() {
 
   size = get_shared_fragments(&tour_test_1, &tour_test_2, &shared_fragments,
                               &sizes);
-  printf("size : %d\n", size);
+
   test_ensure(&test, "[1, 2, 3, 4] & [1, 4, 3, 2] share 1 fragment", size == 1);
 
   test_ensure(&test,

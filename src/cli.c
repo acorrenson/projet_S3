@@ -124,11 +124,6 @@ void cli(int argc, char const *argv[], cli_opt_t *opt) {
           printf("genetic :\n");
           printf("%d %d %lf\n", opt->population_size, opt->generations,
                  opt->mutation_rate);
-        } else {
-          fprintf(
-              stderr, COLOR_R
-              "[cli - error] 3 arguments expected after flag (-ga)\n" COLOR_N);
-          exit(1);
         }
       }
     }
