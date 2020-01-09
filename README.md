@@ -1,12 +1,11 @@
 # projet_S3
 
-Ce projet propose un solveur simple pour résoudre le fameux problème du **Traveling Salesman** ou **Voyageur de commerce**. Il s'appuie sur 5 méthodes bien connues :
+Ce projet propose un solveur simple pour résoudre le fameux problème du **Traveling Salesman** ou **Voyageur de commerce**. Il s'appuie sur 4 méthodes bien connues :
 
 1. **Brute-force** : recherche exhaustive, donne la solution optimale pour des toutes petites instances du problèmes (10 noeuds environ).
 2. **Random-walk** : recherche aléatoire, donne une solution parfaitement aléatoire.
 3. **Nearest-neighbour** : heuristique des "plus proches voisins". Donne une approximation de la solution en temps quadratique.
 4. **Algorithmes génétiques** : utiliser le concept d'évolution pour approximer la solution en croisant plusieurs générations de candidats potentiels. On utilise en particulier une méthode appellé **croisement DPX**.
-5. **Recuit simulé** (BONUS) : Méthode s'inspirant des modèles probabilistes d'états énergétiques en physique appliquée à la métallurgie. Donne une bonne approximation en un temps très court.
 
 ## Structure du code source
 
@@ -19,7 +18,7 @@ Le code source est organisé selon un schéma stricte:
 + `include/methods` : en-têtes pour le méthodes de résolution
 + `tests/` : dossier contenant les modules de tests unitaires.
 
-Notons que la séparation des sources et des en-têtes est un choix de design utilisé afin de faciliter l'usage de notre programme à la fois en tant que logicielle, mais également en tant que bibliothèque utilitaire. Le programmeur souhaitant re-exploiter tout ou partie de ces sources pourra aisément importer les en-têtes de son choix en passant `-I include/` au compilateur C de son choix.
+Notons que la séparation des sources et des en-têtes est un choix de design utilisé afin de faciliter l'usage de notre programme à la fois en tant que logicielle, mais également en tant que bibliothèque utilitaire. Le programmeur souhaitant re-exploiter tout ou partie de ces sources pourra aisément importer les en-têtes de son choix en passant l'option `-I include/` au compilateur C.
 
 ## Conventions de nommage
 
@@ -47,11 +46,14 @@ $ make run
 // lancement des tests unitaires
 $ make test
 
-// génération de la documentation Doxygen (dans les répértoires html/ et latex/)
+// génération de la documentation Doxygen (dans les répertoires html/ et latex/)
 $ make doc
 
 // suppression des artefacts de compilation et réinitialisation des dossiers de build
 $ make clean
+
+// Lance le script d'affichage graphique des résultats dans data/results.csv
+$ make graph
 ```
 
 ## Scripts utiles
@@ -59,7 +61,18 @@ $ make clean
 Pour compléter le programme fournis, des scripts en python sont disponibles dans le répertoires `scripts/`. On trouve notamment le script `graph.py` permettant de visualiser le résultat produit par le programme `Tsp`. Son utilisation est comme suit :
 
 ```
-python3 graph.py fichier1.csv [fichier2.csv ...]
+python3 graph.py fichier1.csv
 ```
 
-Où les fichiers csv contiennent des listes ordonnées de coordonnées correspondant aux noeuds d'une instance de problème TSP et représentant donc une tournée de ces noeuds. Une telle sortie pourra être générée grâce à l'option `-pyg` du programme Tsp.
+Où le fichier csv est conforme au format suivant :
+
+```csv
+Nom de l’instance ; (str)
+Nb de villes ; (int)
+Type ; TSP
+Point ; Abs ; Ord
+  (int) ; (int) ; (int)
+  ...
+Méthode ; longueur  ; Temps CPU (sec) ; Tour
+(str)   ;   (float) ;   (float)       ; (int list)
+```
