@@ -24,10 +24,44 @@
 void cross_dpx(instance_t *, tour_t *, tour_t *, tour_t *);
 
 /**
- * @brief Calcul des fragments de chemins partagés entre deux tournées.
+ * @brief     Recherche d'un fragment de chemin commun entre deux tournées
+ * à partir de deux positions (recherche de droite à gauche dans la deuxième
+ * tournée).
  *
- * @param t1  La première tournée.
- * @param t2  La deuxième tournée.
+ * @param t1  Pointeur sur la tournée 1.
+ * @param t2  Pointeur sur la tournée 1.
+ * @param i1  Indice de départ dans la tournée 1.
+ * @param i2  Indice de départ dans la tournée 2.
+ *
+ * @pre t1->tour[i1] == t2->tour[i2] && t1->dimension == t2->dimension.
+ *
+ * @return int  Taille du fragment commun trouvé (au moins 1).
+ */
+int search_backward(tour_t *t1, tour_t *t2, int i1, int i2);
+
+/**
+ * @brief     Recherche d'un fragment de chemin commun entre deux tournées
+ * à partir de deux positions (recherche de gauche à droite dans la deuxième
+ * tournée).
+ *
+ * @param t1  Pointeur sur la tournée 1.
+ * @param t2  Pointeur sur la tournée 2.
+ * @param i1  Indice de départ dans la tournée 1.
+ * @param i2  Indice de départ dans la tournée 2.
+ *
+ * @pre t1->tour[i1] == t2->tour[i2] && t1->dimension == t2->dimension.
+ *
+ * @return int  Taille du fragment commun trouvé (au moins 1).
+ */
+int search_forward(tour_t *t1, tour_t *t2, int i1, int i2);
+
+/**
+ * @brief Calcul des fragments de chemins partagés entre deux tournées.
+ * L'allocation des ressources nécessaires au stockage des fragments est prise
+ * en charge par la fonction.
+ *
+ * @param t1        La première tournée.
+ * @param t2        La deuxième tournée.
  * @param fragments Les fragments partagés.
  * @param sizes     Les tailles des fragments.
  * @return int      Le nombre de fragments.
@@ -35,27 +69,31 @@ void cross_dpx(instance_t *, tour_t *, tour_t *, tour_t *);
 int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments, int **sizes);
 
 /**
- * @brief Trouve la première occurence de "false" dans un tableau booléen.
+ * @brief Trouve la première occurrence de "false" dans un tableau booléen.
  *
  * @param marks   Le tableau.
  * @param size    La taille du tableau.
- * @return int    L'indice de la première occurence de false (ou NIL si aucune).
+ *
+ * @return int    L'indice de la première occurrence de false (ou NIL si
+ * aucune).
  */
 int find_fragment(int *marks, int size);
 
 /**
- * @brief Find the nearest fragment of path to a node.
+ * @brief Trouve le fragment de chemin le plus proche d'un noeud parmis un
+ * tableau de fragments de chemin. Ignore les fragments déclarés comme marqués.
  *
- * @param inst        The instance.
- * @param node        The node.
- * @param fragments   The array of fragments.
- * @param size        The number of fragments.
- * @param sizes       The sizes of the fragments.
- * @param marks       Boolean array representing marked fragments.
- * @param reverse     A boolean set to True if the nearest fragment found should
- * be reversed to be connceted to the node.
- * @return int        The index of the nearest fragment in the array (or NIL if
- * none is found).
+ * @param inst        L'instance.
+ * @param node        Le noeud.
+ * @param fragments   Le tableau de fragments.
+ * @param size        Le nombre de fragments.
+ * @param sizes       Les tailles des fragments.
+ * @param marks       Tableau des marques sur les fragments.
+ * @param reverse     Un booléen précisant si le chemin le plus proche doit être
+ * inversé pour être connecté au noeud.
+ *
+ * @return int        L'indice du fragment le plus proche dans le tableau de
+ * fragments.
  */
 int nearest_fragment(instance_t *inst, int node, int **fragments, int size,
                      int *sizes, int *marks, bool *reverse);

@@ -17,13 +17,21 @@
 /**
  * @brief Calcul la prochaine permutation dans l'ordre lexicographique.
  *
- * @param permut  La permutation
- * @param dim     Nombre de valeur de la permutation
- * @return true   Si permut a été modifiée (n'est pas la dernière permutation)
- * @return false  Si permut n'a pas été modifiée (est la dernière permutation)
+ * @param permut  La permutation.
+ * @param dim     Nombre de valeur de la permutation.
+ * @return true   Si permut a été modifiée (n'est pas la dernière permutation).
+ * @return false  Si permut n'a pas été modifiée (est la dernière permutation).
  */
 bool next_permutation(int *permut, int dim);
 
-void brute_force(instance_t *, tour_t *, bool);
+/**
+ * @brief Appliquer la méthode force brute à une instance de problème TSP.
+ *
+ * @param instance  Instance TSP.
+ * @param tour      Tournée solution.
+ * @param optimize  Demander une optimisation matricielle (les distances ne
+ * seront pas explicitement calculées).
+ */
+void brute_force(instance_t *instance, tour_t *tour, bool optimize);
 
 #endif

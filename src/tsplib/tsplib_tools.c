@@ -94,7 +94,6 @@ bool tour__has_node(tour_t *t, int node) {
 
 double tour__compute_length(instance_t *instance, tour_t *tour, bool optimize) {
   assert(tour->dimension == instance->dimension);
-  // printf("%d %d\n", tour->dimension, instance->dimension);
   int i = 0;
   tour->length = 0.0;
 
@@ -180,23 +179,33 @@ int instance__node_at(instance_t *inst, int index) {
   }
 }
 
-void tour__get_edges(tour_t *t, int ***edges) {
-  *edges = malloc(t->dimension * sizeof(int *));
-  for (int i = 0; i < t->dimension; i++) {
-    (*edges)[i] = malloc(2 * sizeof(int));
-    if (t->tour[i] < t->tour[(i + 1) % t->dimension]) {
-      (*edges)[i][0] = t->tour[i];
-      (*edges)[i][1] = t->tour[(i + 1) % t->dimension];
-    } else {
-      (*edges)[i][0] = t->tour[(i + 1) % t->dimension];
-      (*edges)[i][1] = t->tour[i];
-    }
-  }
-}
+// void tour__get_edges(tour_t *t, int ***edges) {
+//   *edges = malloc(t->dimension * sizeof(int *));
+//   for (int i = 0; i < t->dimension; i++) {
+//     (*edges)[i] = malloc(2 * sizeof(int));
+//     if (t->tour[i] < t->tour[(i + 1) % t->dimension]) {
+//       (*edges)[i][0] = t->tour[i];
+//       (*edges)[i][1] = t->tour[(i + 1) % t->dimension];
+//     } else {
+//       (*edges)[i][0] = t->tour[(i + 1) % t->dimension];
+//       (*edges)[i][1] = t->tour[i];
+//     }
+//   }
+// }
 
 void tour__from_array(tour_t *t, int array[], int dim) {
   tour__set_dimension(t, dim);
   for (int i = 0; i < dim; i++) {
     t->tour[i] = array[i];
   }
+}
+
+int tour__index_of(tour_t *t, int node) {
+  int i = 0;
+  while (i < t->dimension && t->tour[i] != node) {
+    i++;
+  }
+  if (i >= t->dimension)
+    return NIL;
+  return i;
 }

@@ -234,4 +234,13 @@ int instance__index_of(instance_t *inst, int node);
  */
 void tour__get_edges(tour_t *t, int ***edges);
 
+/**
+ * @brief   Trouve la position d'un noeud dans une tournée.
+ *
+ * @param t     La tournée.
+ * @param node  Le noeud.
+ * @return int  La position du noeud (ou NIL si le noeud est absent).
+ */
+int tour__index_of(tour_t *t, int node);
+
 #endif
