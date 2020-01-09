@@ -248,17 +248,25 @@ int main(int argc, char const *argv[]) {
   // == Sorties
   // ====================================
 
+  double best_len;
+  int best_i = 0;
+  while (best_i < METHODS_NUMBER && res[best_i].tour == NULL) {
+    best_i++;
+  }
+  best_len = res[best_i].length;
+
   // === Ecriture du fichier TOUR ===
   if (opt.state[BAL_T]) {
     int i = 0;
-    // recherche de la première solution
-    while (i < METHODS_NUMBER && res[i].tour == NULL) {
-      i++;
+    // recherche de la meilleure solution
+    for (int i = 0; i < METHODS_NUMBER; i++) {
+      if (res[i].tour != NULL && res[i].length < best_len) {
+        best_len = res[i].length;
+        best_i = i;
+      }
     }
-    // écriture de la première solution
-    if (i < METHODS_NUMBER) {
-      tour__write_as_tsp(&res[i], opt.output_tour);
-    }
+    // écriture de la meilleure solution
+    tour__write_as_tsp(&res[i], opt.output_tour);
   }
 
   // === Ecriture des résultats au format CSV ===

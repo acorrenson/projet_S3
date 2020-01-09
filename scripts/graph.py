@@ -18,19 +18,6 @@ def parse(fn):
     return [(tours[i][0], [instance[j] for j in tours[i][1]]) for i in range(len(tours))]
 
 
-def read_from_file(fn):
-    """
-        Read a sequence of coordinates from a csv file.
-    """
-    l = []
-    with open(fn, "r") as f:
-        for line in f.readlines():
-            a, b = line.split(" ")
-            l.append((float(a), float(b)))
-
-    return l
-
-
 def graph(ll):
     """
         Plot a list of solutions to a TSP instance.
@@ -39,7 +26,6 @@ def graph(ll):
     w = len(ll)
     plt.figure(figsize=(w*3, 3*(1 + w//3)))
     plt.axis('scaled')
-    print(w//3)
     for i, l in enumerate(ll):
         plt.subplot(1 + w//3, 3, i+1)
         plt.title(l[0])
