@@ -74,6 +74,12 @@ int main(int argc, char const *argv[]) {
   cli_opt_t opt;
   cli(argc, argv, &opt);
 
+  // affichage de l'aide
+  if (opt.state[BAL_H]) {
+    help();
+    exit(1);
+  }
+
   // initialisation du générateur aléatoire
   srand(time(NULL));
 

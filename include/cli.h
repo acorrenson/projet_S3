@@ -87,4 +87,10 @@ void cli_opt__init(cli_opt_t *);
  */
 void cli(int argc, char const *argv[], cli_opt_t *opt);
 
+/**
+ * @brief Affiche le menu d'aide.
+ *
+ */
+void help();
+
 #endif

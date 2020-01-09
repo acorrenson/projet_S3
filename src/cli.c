@@ -13,6 +13,31 @@ void cli_opt__init(cli_opt_t *opt) {
   opt->mutation_rate = 0.3;
 }
 
+void help() {
+  fprintf(
+      stderr,
+      "Usage : ./tsp -f <file> [-t <tour>] [-v [<file>]] -<méthode> "
+      "[-h]\n" COLOR_G "-f" COLOR_N
+      " <file> : nom du fichier tsp (obligatoire)\n" COLOR_G "-t" COLOR_N
+      " <file>" COLOR_N " : nom du fichier solution (optionnel)\n" COLOR_G
+      "-v" COLOR_N " [<file>] : mode verbose (optionnel), écrit dans un "
+      "fichier si présent\n" COLOR_G "-o" COLOR_N
+      " <file> : export des résultats dans un fichier csv\n" COLOR_G
+      "-h" COLOR_N " : help, affiche ce texte\n"
+      "\n<méthode> : méthodes de calcul (cumulables) :\n\n" COLOR_G
+      "-bf" COLOR_N " : brute force,\n" COLOR_G "-bfm" COLOR_N
+      " : brute force en utilisant la matrice de distance,\n" COLOR_G
+      "-ppv" COLOR_N " : plus proche voisin,\n" COLOR_G "-rw" COLOR_N
+      " : random walk,\n" COLOR_G "-2opt" COLOR_N
+      " : 2 optimisation. Si -ppv ou -rw ne sont pas présentes on "
+      "utilise "
+      "-rw,\n" COLOR_G "-ga" COLOR_N
+      " <nombre d'individus> <nombre de générations> <taux de "
+      "mutation>"
+      " : algorithme génétique, défaut = 20 individus, 200 générations, 0.3 "
+      "mutation.\n");
+}
+
 void cli(int argc, char const *argv[], cli_opt_t *opt) {
 
   cli_opt__init(opt);
@@ -147,12 +172,12 @@ void cli(int argc, char const *argv[], cli_opt_t *opt) {
     i++;
   }
 
-  if (!opt->state[BAL_F]) {
+  if (!opt->state[BAL_F] && !opt->state[BAL_H]) {
     fprintf(stderr, COLOR_R "[cli - error] no input file provided\n" COLOR_N);
     exit(1);
   }
 
-  if (methods == 0) {
+  if (methods == 0 && !opt->state[BAL_H]) {
     fprintf(stderr, COLOR_R "[cli - error] no method provided\n" COLOR_N);
     exit(1);
   }
