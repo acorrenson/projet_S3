@@ -26,9 +26,9 @@
  */
 typedef struct instance_s {
   //! nom de l'instance
-  char name[TAILLENOM];
+  char name[NAMESIZE];
   //! type de l'instance
-  char type[TAILLENOM];
+  char type[NAMESIZE];
   //! nombre de sommets dans l'instance
   int dimension;
   //! longueur de la tournée (calcul)
@@ -49,7 +49,7 @@ typedef struct instance_s {
  */
 typedef struct tour_s {
   //! nom de l'instance
-  char name[TAILLENOM];
+  char name[NAMESIZE];
   //! nombre de sommets dans l'instance
   int dimension;
   //! longueur du tour
@@ -65,7 +65,8 @@ typedef struct tour_s {
 // ==================================================
 
 /**
- * @brief   Lecture d'un fichier au format TSP
+ * @brief   Lecture d'un fichier au format TSP. Peut interrompre l'éxecution du
+ * programme en cas d'erreur de lecture.
  *
  */
 void instance__read_from_file(instance_t *, FILE *);
@@ -73,10 +74,16 @@ void instance__read_from_file(instance_t *, FILE *);
 /**
  * @brief Ecriture d'un tour dans un fichier (au format .tour).
  *
- * @param zero Précise si la numérotation des noeuds commence à zero ou le cas
- * contraire à 1.
  */
 void tour__write_as_tsp(tour_t *, FILE *);
+
+/**
+ * @brief   Affiche une tournée dans le style Python3 (lisible par eval).
+ *
+ * @param tour  Tournée.
+ * @param out   Fichier de sortie.
+ */
+void tour__pprint(tour_t *tour, FILE *out);
 
 /**
  * @brief Affiche la matrice des distances d'une instance.
@@ -91,8 +98,9 @@ void instance__print_matrix(instance_t *);
 /**
  * @brief Initialisation d'une instance TSP.
  *
+ * @param zero  Précise s'il l'ajout du noeud 0 est requis.
  */
-void instance__init(instance_t *, bool);
+void instance__init(instance_t *, bool zero);
 
 /**
  * @brief Réinitialisation d'une instance TSP.
@@ -107,10 +115,21 @@ void instance__reset(instance_t *);
  */
 void tour__init(tour_t *);
 
+/**
+ * @brief Copie complète d'une tournée vers une autre.
+ *
+ * @pre La tournée déstination doit être initialisée et allouée (par exemple
+ * avec la fonction @ref tour__set_dimension).
+ */
 void tour__copy(tour_t *, const tour_t *);
 
-void tour__pprint(tour_t *, FILE *out);
-
+/**
+ * @brief Initialise une tournée à partir d'un tableau d'entier.
+ *
+ * @param t     La tournée.
+ * @param array Le tableau d'entiers.
+ * @param dim   La dimension du tableau.
+ */
 void tour__from_array(tour_t *t, int array[], int dim);
 
 /**
@@ -121,10 +140,12 @@ void tour__from_array(tour_t *t, int array[], int dim);
 void tour__add_node(tour_t *, int);
 
 /**
- * @brief Initialise la dimension d'une tournée.
+ * @brief Initialise la dimension d'une tournée. Alloue la mémoire nécessaire.
  *
+ * @param t   La tournée.
+ * @param dim Dimension de la tournée.
  */
-void tour__set_dimension(tour_t *, int);
+void tour__set_dimension(tour_t *t, int dim);
 
 // ==================================================
 // == FONCTIONS UTILES
@@ -184,7 +205,7 @@ double tour__compute_length(instance_t *instance, tour_t *tour, bool);
 void instance__extract_tour(instance_t *, tour_t *);
 
 /**
- * @brief Marque un neoud.
+ * @brief Marque un noeud.
  *
  */
 void instance__mark(instance_t *instance, int node);
@@ -224,15 +245,6 @@ int instance__node_at(instance_t *inst, int index);
  * @return int  L'indice du noeud.
  */
 int instance__index_of(instance_t *inst, int node);
-
-/**
- * @brief Extraire la list des arrêtes d'une tournée (les couples arrêtes sont
- * donnés dans l'ordre croissant).
- *
- * @param t     La tournée.
- * @param edges Les arrêtes.
- */
-void tour__get_edges(tour_t *t, int ***edges);
 
 /**
  * @brief   Trouve la position d'un noeud dans une tournée.

@@ -27,8 +27,8 @@ bool next_permutation(int *permut, int dim);
 /**
  * @brief Appliquer la méthode force brute à une instance de problème TSP.
  *
- * @param instance  Instance TSP.
- * @param tour      Tournée solution.
+ * @param instance  Instance de problème TSP.
+ * @param tour      Tournée solution au problème TSP.
  * @param optimize  Demander une optimisation matricielle (les distances ne
  * seront pas explicitement calculées).
  */

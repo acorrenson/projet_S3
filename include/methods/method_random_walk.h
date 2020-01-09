@@ -15,9 +15,12 @@
 #include <tsplib/tsplib.h>
 
 /**
- * @brief Construct a new random walk object
+ * @brief   Utilise la méthode heuristique "Marche Aléatoire" pour résoudre un
+ * problème TSP.
  *
+ * @param instance  Instance de problème TSP.
+ * @param tour      Tournée solution au problème TSP.
  */
-void random_walk(instance_t *, tour_t *);
+void random_walk(instance_t *instance, tour_t *tour);
 
 #endif

@@ -17,7 +17,7 @@
 #include <stdlib.h>
 
 //! les noms sont limités à 32 caractères
-#define TAILLENOM 32
+#define NAMESIZE 32
 //! taille du buffer de lecture des fichiers
 #define MAXBUF 256
 //! indique l'échec dans une fonction

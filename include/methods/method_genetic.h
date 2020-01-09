@@ -19,10 +19,15 @@
 #include <tsplib/tsplib.h>
 
 /**
- * @brief Effectuer un croisement DPX entre deux individus.
+ * @brief   Effectuer un croisement DPX entre deux tournées ( @ref tour_t ).
  *
+ * @param instance  L'instance de problème TSP.
+ * @param tour1     Tournée 1.
+ * @param tour2     Tournée 2.
+ * @param tour3     Tournée fille.
  */
-void cross_dpx(instance_t *, tour_t *, tour_t *, tour_t *);
+void cross_dpx(instance_t *instance, tour_t *tour1, tour_t *tour2,
+               tour_t *tour3);
 
 /**
  * @brief     Recherche d'un fragment de chemin commun entre deux tournées
@@ -70,7 +75,7 @@ int search_forward(tour_t *t1, tour_t *t2, int i1, int i2);
 int get_shared_fragments(tour_t *t1, tour_t *t2, int ***fragments, int **sizes);
 
 /**
- * @brief Trouve la première occurrence de "false" dans un tableau booléen.
+ * @brief   Trouve la première occurrence de "false" dans un tableau booléen.
  *
  * @param marks   Le tableau.
  * @param size    La taille du tableau.
@@ -100,9 +105,12 @@ int nearest_fragment(instance_t *inst, int node, int **fragments, int size,
                      int *sizes, int *marks, bool *reverse);
 
 /**
- * @brief Résout un problème TSP en appliquant un algorithme génétique.
+ * @brief Utilise un algorithme génétique pour résoudre une problème TSP.
  *
+ * @param instance  Instance de problème TSP.
+ * @param tour      Tournée solution au problème TSP.
+ * @param opt       Structure des options de la ligne de commande.
  */
-void genetic(instance_t *, tour_t *, cli_opt_t *);
+void genetic(instance_t *instance, tour_t *tour, cli_opt_t *opt);
 
 #endif
