@@ -239,6 +239,7 @@ int main(int argc, char const *argv[]) {
     }
   }
 
+  // === Methode Algo Genetique ===
   if (opt.state[BAL_GA]) {
     if (opt.state[BAL_V]) {
       fprintf(opt.log,
