@@ -43,14 +43,6 @@ point_t line_of_points(point_t p1, point_t p2);
 point_t intersection(point_t d1, point_t d2);
 
 /**
- * @brief Test si deux droites se croisent.
- *
- * @param d1 Droite 1.
- * @param d2 Droite 2.
- */
-bool interesect(point_t d1, point_t d2);
-
-/**
  * @brief Distance euclidienne entre deux points.
  *
  * @param p1 Point 1.
@@ -86,5 +78,14 @@ bool cross(point_t p1, point_t p2, point_t p3, point_t p4);
  * @return false  Si l'optimisation n'a pu être appliquée
  */
 bool optimize_2opt(instance_t *instance, tour_t *tour);
+
+/**
+ * @brief Effectue l'optimisation maximale d'une tournée (application de @ref
+ * optimize_2opt tant que possible).
+ *
+ * @param instance  L'instance.
+ * @param tour      La tournée à optimiser.
+ */
+void optimize_2opt_full(instance_t *instance, tour_t *tour);
 
 #endif

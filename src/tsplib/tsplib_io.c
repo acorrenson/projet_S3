@@ -146,7 +146,6 @@ void instance__read_from_file(instance_t *instance, FILE *f) {
   strcpy(instance->name, name);
   strcpy(instance->type, "TSP");
   if (instance->node_zero) {
-    printf("ADD ZERO\n");
     // Si besoin, on ajoute la ville 0 de position (0, 0)
     instance->dimension = dim;
     instance->tabCoord[0][0] = 0;

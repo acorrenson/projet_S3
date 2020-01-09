@@ -184,7 +184,7 @@ int main(int argc, char const *argv[]) {
       previous_len = res[SOL_NN].length;
       tour__set_dimension(&res[SOL_NN_O], res[SOL_NN].dimension);
       tour__copy(&res[SOL_NN_O], &res[SOL_NN]);
-      optimize_2opt(&instance, &res[SOL_NN_O]);
+      optimize_2opt_full(&instance, &res[SOL_NN_O]);
       exec_times[SOL_NN_O] = exec_times[SOL_NN] + time(NULL) - time_start;
 
       // Informations (verbose)
@@ -217,7 +217,7 @@ int main(int argc, char const *argv[]) {
       previous_len = res[SOL_RW].length;
       tour__set_dimension(&res[SOL_RW_O], res[SOL_RW].dimension);
       tour__copy(&res[SOL_RW_O], &res[SOL_RW]);
-      optimize_2opt(&instance, &res[SOL_RW_O]);
+      optimize_2opt_full(&instance, &res[SOL_RW_O]);
       exec_times[SOL_RW_O] = exec_times[SOL_RW] + time(NULL) - time_start;
 
       // Informations (verbose)

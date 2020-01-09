@@ -16,8 +16,6 @@ point_t intersection(point_t d1, point_t d2) {
   return inter;
 }
 
-bool interesect(point_t d1, point_t d2) { return d1.x != d1.y; }
-
 double dist(point_t p1, point_t p2) {
   return sqrt(pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2));
 }
@@ -63,9 +61,8 @@ bool optimize_2opt(instance_t *instance, tour_t *tour) {
                       instance->tabCoord[instance__index_of(instance, n4)][1]};
 
         if (cross(p1, p2, p3, p4)) {
-          // printf("POSSIBLE OPT (%d %d)x(%d %d)!\n", n1, n2, n3, n4);
-          // decroiser
-          // -> inverser le chemin entre Noeud(i+1) et Noeud(j) (inclus)
+          // decroiser -> inverser le chemin entre Noeud(i+1) et Noeud(j)
+          // (inclus)
           reverse(tour->tour, (i + 1) % dim, j % dim);
           tour__compute_length(instance, tour, true);
           return true;
@@ -74,4 +71,9 @@ bool optimize_2opt(instance_t *instance, tour_t *tour) {
     }
   }
   return false;
+}
+
+void optimize_2opt_full(instance_t *instance, tour_t *tour) {
+  while (optimize_2opt(instance, tour)) {
+  };
 }

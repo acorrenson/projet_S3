@@ -1,24 +1,5 @@
 #include <methods/method_nearest_neighbour.h>
 
-void find_nearest_neighbour(instance_t *instance, int node, int *nearest,
-                            double *dist) {
-  instance__mark(instance, node);
-  *nearest = instance__find_non_marked(instance);
-  double dist_to_next = instance__dist_matrix(instance, node, *nearest);
-  *dist = dist_to_next;
-
-  for (int i = 1; i < instance->dimension; i++) {
-    if (!instance__marked(instance, i)) {
-      dist_to_next = instance__dist_matrix(instance, node, i);
-      if (dist_to_next < *dist) {
-        *dist = dist_to_next;
-        *nearest = i;
-      }
-    }
-  }
-  instance__mark(instance, *nearest);
-}
-
 void nearest_neighbour(instance_t *instance, tour_t *result) {
   instance__compute_distances(instance);
   int dim = instance->dimension;

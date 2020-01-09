@@ -23,7 +23,4 @@
  */
 void nearest_neighbour(instance_t *instance, tour_t *result);
 
-void find_nearest_neighbour(instance_t *instance, int node, int *nearest,
-                            double *dist);
-
 #endif
