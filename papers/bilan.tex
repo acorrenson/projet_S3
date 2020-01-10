@@ -1,0 +1,74 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+
+\hypersetup{
+  % parametrage des hyperliens
+  colorlinks = true, % colorise les liens
+  breaklinks = true, % permet les retours à la ligne pour les liens trop longs
+  linkcolor = black, % couleur des liens internes aux documents
+  citecolor = black, % couleur des liens vers les references bibliographiques
+  urlcolor = blue, % couleur des hyperliens
+}
+\begin{document}
+
+\title{Bilan du Projet S3}
+\author{Arthur Correnson}
+\maketitle
+
+\section*{Introduction}
+
+Lors du semestre 3 de licence, il nous a été demandé d'implémenter en langage C un logiciel de résolution du \textbf{problème du voyageur de commerce}. Ce problème d'optimisation combinatoire est insoluble en grande dimension, mais plusieurs méthodes permettent d'approcher la solution optimale à moindre coût. Nous proposons ici quatre méthodes de résolution :
+
+\begin{itemize}
+	\item \textbf{Force Brute} 	Recherche exhaustive du plus court chemin.
+	\item \textbf{Algorithme génétique} 	Approche évolutive basée sur le croisement de solutions intermédiaires.
+	\item \textbf{Plus Proche voisin}	 	Méthode heuristique calculant de proche en proche le plus court chemin.
+	\item \textbf{Marche aléatoire} Tirage au sort d'un chemin.
+\end{itemize}
+
+Notons qu'une méthode d'optimisation nommée \textbf{2 optimisation} a aussi été développée. Elle permet d'améliorer les résultats obtenus par les méthodes précédentes.
+
+\section*{Programme rendu}
+
+La réponse au sujet prend la forme d'un programme C utilisable en ligne de commande. Il attend en entrée un fichier au format standard \href{http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/}{TSP} décrivant le problème à résoudre et produit une solution au problème sous la forme d'un fichier \textbf{CSV}. Les quatre méthodes demandées ont été implémentées et vérifiée.
+
+\subsection*{Structure des sources}
+
+Le code source est organisé selon une arborescence stricte :
+
+\begin{itemize}
+	\item 	\textbf{docs/} : La documentation
+	\item 	\textbf{scripts/} : Scripts utiles python (affichage graphique des résultats)
+	\item 	\textbf{data/} : Exemples de fichiers TSP et des résultats associés.
+    	\item 	\textbf{src/} : contient le code source en C
+    \item 	\textbf{src/tsplib/} : module d'interaction avec les fichiers au format TSP.
+	\item	\textbf{src/methods/} : implémentation des différentes méthodes de résolution
+   	\item 	\textbf{include/} : contient tous les en-têtes
+   	\item	\textbf{include/tsplib} : en-têtes pour le module tsplib
+	\item 	\textbf{include/methods} : en-têtes pour le méthodes de résolution
+    \item 	\textbf{tests/} : dossier contenant les modules de tests unitaires.
+\end{itemize}
+
+\subsection*{Compilation}
+
+
+Notons que la séparation des sources et des en-têtes est un choix de design utilisé afin de faciliter l'usage de notre programme à la fois en tant que logicielle, mais également en tant que bibliothèque utilitaire. Le programmeur souhaitant re-exploiter tout ou partie de ces sources pourra aisément importer les en-têtes de son choix en passant l'option -I include/ au compilateur C.
+
+\subsection*{Utilisation du programme}
+
+\begin{tabular}{ | c | l |}
+	\textbf{option}	& \textbf{méthode} \\
+	-bf		& Force Brute \\
+	-bfm	& Force Brute (optimisation matricielle) \\
+	-ga		& algorithme génétique \\
+	-rw		& marche aléatoire (\textit{Random Walk}) \\
+	-ppv		& plus proche voisin (\textit{Nearest Neighbour}) \\
+	-2opt 	& application de la \textbf{2-optimisation} \\
+\end{tabular}
+
+\end{document}
