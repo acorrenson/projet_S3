@@ -7,7 +7,8 @@
 #include <time.h>
 #include <tsplib/tsplib.h>
 
-const int METHODS_NUMBER = 7;
+#define METHODS_NUMBER 7
+
 const int SOL_BF = 0;   // solution pour le brute_force
 const int SOL_BFM = 1;  // solution pour le brute_force (opti)
 const int SOL_NN = 2;   // solution pour nearest neighbour
